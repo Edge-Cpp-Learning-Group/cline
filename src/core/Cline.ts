@@ -21,7 +21,8 @@ import { TerminalManager } from "../integrations/terminal/TerminalManager"
 import { BrowserSession } from "../services/browser/BrowserSession"
 import { UrlContentFetcher } from "../services/browser/UrlContentFetcher"
 import { listFiles } from "../services/glob/list-files"
-import { regexSearchFiles } from "../services/ripgrep"
+// import { regexSearchFiles } from "../services/ripgrep"
+import { searchFilesWithADO } from "../services/adosearch"
 import { parseSourceCodeForDefinitionsTopLevel } from "../services/tree-sitter"
 import { ApiConfiguration } from "../shared/api"
 import { findLast, findLastIndex } from "../shared/array"
@@ -2142,7 +2143,7 @@ export class Cline {
 								this.consecutiveMistakeCount = 0
 
 								const absolutePath = path.resolve(cwd, relDirPath)
-								const results = await regexSearchFiles(
+								const results = await searchFilesWithADO(
 									cwd,
 									absolutePath,
 									regex,

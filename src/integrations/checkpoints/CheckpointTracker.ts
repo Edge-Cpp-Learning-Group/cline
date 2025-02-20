@@ -369,44 +369,42 @@ class CheckpointTracker {
 	}
 
 	private async addAllFiles(git: SimpleGit) {
-		await this.renameNestedGitRepos(true)
-		try {
-			await git.add(".")
-		} catch (error) {
-			console.error("Failed to add files to git:", error)
-		} finally {
-			await this.renameNestedGitRepos(false)
-		}
+		// await this.renameNestedGitRepos(true)
+		// try {
+		// 	await git.add(".")
+		// } catch (error) {
+		// 	console.error("Failed to add files to git:", error)
+		// } finally {
+		// 	await this.renameNestedGitRepos(false)
+		// }
 	}
 
 	// Since we use git to track checkpoints, we need to temporarily disable nested git repos to work around git's requirement of using submodules for nested repos.
 	private async renameNestedGitRepos(disable: boolean) {
-		// Find all .git directories that are not at the root level
-		const gitPaths = await globby("**/.git" + (disable ? "" : GIT_DISABLED_SUFFIX), {
-			cwd: this.cwd,
-			onlyDirectories: true,
-			ignore: [".git"], // Ignore root level .git
-			dot: true,
-			markDirectories: false,
-		})
-
-		// For each nested .git directory, rename it based on operation
-		for (const gitPath of gitPaths) {
-			const fullPath = path.join(this.cwd, gitPath)
-			let newPath: string
-			if (disable) {
-				newPath = fullPath + GIT_DISABLED_SUFFIX
-			} else {
-				newPath = fullPath.endsWith(GIT_DISABLED_SUFFIX) ? fullPath.slice(0, -GIT_DISABLED_SUFFIX.length) : fullPath
-			}
-
-			try {
-				await fs.rename(fullPath, newPath)
-				console.log(`CheckpointTracker ${disable ? "disabled" : "enabled"} nested git repo ${gitPath}`)
-			} catch (error) {
-				console.error(`CheckpointTracker failed to ${disable ? "disable" : "enable"} nested git repo ${gitPath}:`, error)
-			}
-		}
+		// // Find all .git directories that are not at the root level
+		// const gitPaths = await globby("**/.git" + (disable ? "" : GIT_DISABLED_SUFFIX), {
+		// 	cwd: this.cwd,
+		// 	onlyDirectories: true,
+		// 	ignore: [".git"], // Ignore root level .git
+		// 	dot: true,
+		// 	markDirectories: false,
+		// })
+		// // For each nested .git directory, rename it based on operation
+		// for (const gitPath of gitPaths) {
+		// 	const fullPath = path.join(this.cwd, gitPath)
+		// 	let newPath: string
+		// 	if (disable) {
+		// 		newPath = fullPath + GIT_DISABLED_SUFFIX
+		// 	} else {
+		// 		newPath = fullPath.endsWith(GIT_DISABLED_SUFFIX) ? fullPath.slice(0, -GIT_DISABLED_SUFFIX.length) : fullPath
+		// 	}
+		// 	try {
+		// 		await fs.rename(fullPath, newPath)
+		// 		console.log(`CheckpointTracker ${disable ? "disabled" : "enabled"} nested git repo ${gitPath}`)
+		// 	} catch (error) {
+		// 		console.error(`CheckpointTracker failed to ${disable ? "disable" : "enable"} nested git repo ${gitPath}:`, error)
+		// 	}
+		// }
 	}
 
 	public dispose() {
