@@ -21,8 +21,8 @@ import { TerminalManager } from "../integrations/terminal/TerminalManager"
 import { BrowserSession } from "../services/browser/BrowserSession"
 import { UrlContentFetcher } from "../services/browser/UrlContentFetcher"
 import { listFiles } from "../services/glob/list-files"
-// import { regexSearchFiles } from "../services/ripgrep"
-import { searchFilesWithADO } from "../services/adosearch"
+import { regexSearchFiles } from "../services/ripgrep"
+// import { searchFilesWithADO } from "../services/adosearch"
 import { parseSourceCodeForDefinitionsTopLevel } from "../services/tree-sitter"
 import { ApiConfiguration } from "../shared/api"
 import { findLast, findLastIndex } from "../shared/array"
@@ -1235,6 +1235,8 @@ export class Cline {
 					return this.autoApprovalSettings.actions.executeCommands
 				case "browser_action":
 					return this.autoApprovalSettings.actions.useBrowser
+				case "save_memory":
+					return true
 				case "access_mcp_resource":
 				case "use_mcp_tool":
 					return this.autoApprovalSettings.actions.useMcp
@@ -1469,6 +1471,8 @@ export class Cline {
 				const toolDescription = () => {
 					switch (block.name) {
 						case "execute_command":
+							return `[${block.name} for '${block.params.command}']`
+						case "save_memory":
 							return `[${block.name} for '${block.params.command}']`
 						case "read_file":
 							return `[${block.name} for '${block.params.path}']`
@@ -2143,7 +2147,7 @@ export class Cline {
 								this.consecutiveMistakeCount = 0
 
 								const absolutePath = path.resolve(cwd, relDirPath)
-								const results = await searchFilesWithADO(
+								const results = await regexSearchFiles(
 									cwd,
 									absolutePath,
 									regex,
@@ -2346,6 +2350,10 @@ export class Cline {
 
 							break
 						}
+					}
+					case "save_memory": {
+						console.log(this)
+						break
 					}
 					case "execute_command": {
 						const command: string | undefined = block.params.command
@@ -2911,7 +2919,7 @@ export class Cline {
 		}
 
 		/*
-		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present. 
+		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present.
 		When you see the UI inactive during this, it means that a tool is breaking without presenting any UI. For example the write_to_file tool was breaking when relpath was undefined, and for invalid relpath it never presented UI.
 		*/
 		this.presentAssistantMessageLocked = false // this needs to be placed here, if not then calling this.presentAssistantMessage below would fail (sometimes) since it's locked

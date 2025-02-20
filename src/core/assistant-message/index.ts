@@ -22,6 +22,7 @@ export const toolUseNames = [
 	"ask_followup_question",
 	"plan_mode_response",
 	"attempt_completion",
+	"save_memory",
 ] as const
 
 // Converts array of tool call names into a union type ("execute_command" | "read_file" | ...)
