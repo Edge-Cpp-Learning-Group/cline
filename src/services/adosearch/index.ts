@@ -171,7 +171,7 @@ export class AzureDevOpsCodeSearch {
 					const snippet: string[] = []
 					for (let j = startLine; j < endLine; j++) {
 						let prefix = j === i ? "> " : "  "
-						if (contextLines == 0) {
+						if (contextLines === 0) {
 							prefix = ""
 						}
 
