@@ -1481,7 +1481,7 @@ export class Cline {
 						case "replace_in_file":
 							return `[${block.name} for '${block.params.path}']`
 						case "search_files":
-							return `[${block.name} for '${block.params.regex}'${
+							return `[${block.name} for '${block.params.search_text}'${
 								block.params.file_pattern ? ` in '${block.params.file_pattern}'` : ""
 							}]`
 						case "list_files":
@@ -2109,12 +2109,12 @@ export class Cline {
 					}
 					case "search_files": {
 						const relDirPath: string | undefined = block.params.path
-						const regex: string | undefined = block.params.regex
+						const search_text: string | undefined = block.params.search_text
 						const filePattern: string | undefined = block.params.file_pattern
 						const sharedMessageProps: ClineSayTool = {
 							tool: "searchFiles",
 							path: getReadablePath(cwd, removeClosingTag("path", relDirPath)),
-							regex: removeClosingTag("regex", regex),
+							search_text: removeClosingTag("search_text", search_text),
 							filePattern: removeClosingTag("file_pattern", filePattern),
 						}
 						try {
@@ -2138,9 +2138,9 @@ export class Cline {
 
 									break
 								}
-								if (!regex) {
+								if (!search_text) {
 									this.consecutiveMistakeCount++
-									pushToolResult(await this.sayAndCreateMissingParamError("search_files", "regex"))
+									pushToolResult(await this.sayAndCreateMissingParamError("search_files", "search_text"))
 
 									break
 								}
@@ -2150,7 +2150,7 @@ export class Cline {
 								const results = await regexSearchFiles(
 									cwd,
 									absolutePath,
-									regex,
+									search_text,
 									filePattern,
 									this.clineIgnoreController,
 								)

@@ -56,10 +56,10 @@ Description: Lists definition names (classes, functions, methods, etc.) used in 
 4. search_files:
 <search_files>
 <path>Directory path here</path>
-<regex>Your regex pattern here</regex>
+<search_text>Your search text here</search_text>
 <filePattern>Optional file pattern here</filePattern>
 </search_files>
-Description: Perform a regex search across files in a specified directory, providing context-rich results. This tool searches for patterns or specific content across multiple files, displaying each match with encapsulating context.
+Description: Perform a search across files in a specified directory, providing context-rich results. This tool searches for patterns or specific content across multiple files, displaying each match with encapsulating context.
 
 5. read_file:
 <read_file>

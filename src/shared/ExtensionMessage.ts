@@ -151,6 +151,7 @@ export interface ClineSayTool {
 	diff?: string
 	content?: string
 	regex?: string
+	search_text?: string
 	filePattern?: string
 }
 

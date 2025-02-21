@@ -63,7 +63,7 @@ Cline has access to the following tools for various tasks:
     - `write_to_file`: Create or overwrite files
     - `read_file`: Read file contents
     - `replace_in_file`: Make targeted edits to files
-    - `search_files`: Search files using regex
+    - `search_files`: Search text from files
     - `list_files`: List directory contents
 
 2. **Terminal Operations**
@@ -100,7 +100,7 @@ Each tool has specific parameters and usage patterns. Here are some examples:
     ```xml
     <search_files>
     <path>src</path>
-    <regex>function\s+\w+\(</regex>
+    <search_text>text</search_text>
     <file_pattern>*.ts</file_pattern>
     </search_files>
     ```

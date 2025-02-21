@@ -145,10 +145,12 @@ export class AzureDevOpsCodeSearch {
 		const lines = content.split("\n")
 		const results: string[] = []
 		const processedRanges = new Set<string>()
-		let lastEndLine = -1 // 记录上一个片段的结束行
+		let lastEndLine = -1
+
+		const searchRegex = new RegExp(searchText.replace(/\*/g, ".*"), "i")
 
 		for (let i = 0; i < lines.length; i++) {
-			if (lines[i].includes(searchText)) {
+			if (searchRegex.test(lines[i])) {
 				const startLine = Math.max(0, i - contextLines)
 				const endLine = Math.min(lines.length, i + contextLines + 1)
 
@@ -162,7 +164,6 @@ export class AzureDevOpsCodeSearch {
 				}
 
 				if (!isOverlapping) {
-					// 如果与上一个片段不连续，添加分隔线
 					if (lastEndLine !== -1 && startLine > lastEndLine) {
 						results.push("------")
 					}
@@ -211,7 +212,7 @@ export class AzureDevOpsCodeSearch {
 }
 
 function limitResults(lines: string[]): string {
-	const MAX_RESULTS = 300
+	const MAX_RESULTS = 50
 
 	let output = ""
 	if (lines.length >= MAX_RESULTS) {

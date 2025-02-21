@@ -486,7 +486,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<div style={headerStyle}>
 							{toolIcon("search")}
 							<span style={{ fontWeight: "bold" }}>
-								Cline wants to search this directory for <code>{tool.regex}</code>:
+								Cline wants to search this directory for <code>{tool.search_text}</code>:
 							</span>
 						</div>
 						<CodeAccordian

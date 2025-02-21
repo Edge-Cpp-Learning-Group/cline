@@ -34,7 +34,7 @@ export const toolParamNames = [
 	"path",
 	"content",
 	"diff",
-	"regex",
+	"search_text",
 	"file_pattern",
 	"recursive",
 	"action",
@@ -83,7 +83,7 @@ export interface ReplaceInFileToolUse extends ToolUse {
 
 export interface SearchFilesToolUse extends ToolUse {
 	name: "search_files"
-	params: Partial<Pick<Record<ToolParamName, string>, "path" | "regex" | "file_pattern">>
+	params: Partial<Pick<Record<ToolParamName, string>, "path" | "search_text" | "file_pattern">>
 }
 
 export interface ListFilesToolUse extends ToolUse {

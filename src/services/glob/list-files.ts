@@ -39,6 +39,7 @@ export async function listFiles(dirPath: string, recursive: boolean, limit: numb
 	const options = {
 		cwd: dirPath,
 		dot: true, // do not ignore hidden files/directories
+		deep: 2,
 		absolute: true,
 		markDirectories: true, // Append a / on any directories matched (/ is used on windows as well, so dont use path.sep)
 		gitignore: recursive, // globby ignores any files that are gitignored
@@ -66,7 +67,7 @@ Breadth-first traversal of directory structure level by level up to a limit:
 */
 async function globbyLevelByLevel(limit: number, options?: Options) {
 	let results: Set<string> = new Set()
-	let queue: string[] = ["*"]
+	let queue: string[] = ["base/*", "chrome/*", "components/*"]
 
 	const globbingProcess = async () => {
 		while (queue.length > 0 && results.size < limit) {
@@ -88,7 +89,7 @@ async function globbyLevelByLevel(limit: number, options?: Options) {
 
 	// Timeout after 10 seconds and return partial results
 	const timeoutPromise = new Promise<string[]>((_, reject) => {
-		setTimeout(() => reject(new Error("Globbing timeout")), 10_000)
+		setTimeout(() => reject(new Error("Globbing timeout")), 90_000)
 	})
 	try {
 		return await Promise.race([globbingProcess(), timeoutPromise])
