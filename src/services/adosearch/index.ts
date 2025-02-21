@@ -96,8 +96,8 @@ export class AzureDevOpsCodeSearch {
 		if (filePattern) {
 			searchText = `${searchText} AND file:${filePattern}`
 		} else {
-            searchText = `${searchText} AND (file:*.h OR file:*.cc)`;
-        }
+			searchText = `${searchText} AND (file:*.h OR file:*.cc)`
+		}
 
 		const searchRequest: SearchRequest = {
 			searchText,
