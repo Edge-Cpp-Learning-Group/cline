@@ -101,12 +101,18 @@ export class AzureDevOpsCodeSearch {
 		this.lastSearchText = searchText
 		this.filePattern = filePattern
 
-		searchText = `${searchText} NOT file:*test*`
 		if (filePattern) {
-			searchText = `${searchText} AND file:${filePattern}`
+			// *.h,*.cc => (file:*.h OR file:*.cc)
+			// filepattern = *.h,*.cc
+			const filePatterns = filePattern
+				.split(",")
+				.map((pattern) => `file:${pattern.trim()}`)
+				.join(" OR ")
+			searchText = `${searchText} AND (${filePatterns})`
 		} else {
-			searchText = `${searchText} NOT (file:*.spec* OR file: *.css OR file: *.md OR file: *.json)`
+			searchText = `${searchText} NOT (file:*.spec* OR file: *.css OR file: *.md OR file: *.json OR file: *.xtb)`
 		}
+		searchText += ` NOT file:*test*`
 
 		let searchBranch
 		if (branch && branch !== "main") {

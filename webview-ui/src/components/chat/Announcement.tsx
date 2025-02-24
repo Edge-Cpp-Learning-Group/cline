@@ -43,7 +43,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					.
 				</li>
 				<li>
-					<b>Mermaid diagrams in Plan mode!</b> Cline can now visualize his plans using flowcharts, sequences,
+					<b>Mermaid diagrams in Plan mode!</b> EdgeAICoder can now visualize his plans using flowcharts, sequences,
 					entity-relationships, and more. When he explains his approach using mermaid, you'll see a diagram right in
 					chat that you can click to expand.
 				</li>

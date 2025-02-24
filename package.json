@@ -1,9 +1,9 @@
 {
-	"name": "claude-dev",
-	"displayName": "Cline",
+	"name": "edgeaicoder",
+	"displayName": "EdgeAICoder",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.4.4",
-	"icon": "assets/icons/icon.png",
+	"icon": "assets/icons/icon_edge.png",
 	"galleryBanner": {
 		"color": "#617A91",
 		"theme": "dark"
@@ -12,15 +12,15 @@
 		"vscode": "^1.84.0"
 	},
 	"author": {
-		"name": "Cline Bot Inc."
+		"name": "Microsoft Inc."
 	},
 	"license": "Apache-2.0",
-	"publisher": "saoudrizwan",
+	"publisher": "edge",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/cline/cline"
+		"url": "https://github.com/Edge-Cpp-Learning-Group/cline"
 	},
-	"homepage": "https://cline.bot",
+	"homepage": "https://github.com/Edge-Cpp-Learning-Group/cline",
 	"categories": [
 		"AI",
 		"Chat",
@@ -49,86 +49,86 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "claude-dev-ActivityBar",
-					"title": "Cline",
-					"icon": "assets/icons/icon.svg"
+					"id": "edgeaicoder-ActivityBar",
+					"title": "EdgeAICoder",
+					"icon": "assets/icons/icon_edge.png"
 				}
 			]
 		},
 		"views": {
-			"claude-dev-ActivityBar": [
+			"edgeaicoder-ActivityBar": [
 				{
 					"type": "webview",
-					"id": "claude-dev.SidebarProvider",
+					"id": "edgeaicoder.SidebarProvider",
 					"name": ""
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "cline.plusButtonClicked",
+				"command": "edgeaicoder.plusButtonClicked",
 				"title": "New Task",
 				"icon": "$(add)"
 			},
 			{
-				"command": "cline.mcpButtonClicked",
+				"command": "edgeaicoder.mcpButtonClicked",
 				"title": "MCP Servers",
 				"icon": "$(extensions)"
 			},
 			{
-				"command": "cline.historyButtonClicked",
+				"command": "edgeaicoder.historyButtonClicked",
 				"title": "History",
 				"icon": "$(history)"
 			},
 			{
-				"command": "cline.popoutButtonClicked",
+				"command": "edgeaicoder.popoutButtonClicked",
 				"title": "Open in Editor",
 				"icon": "$(link-external)"
 			},
 			{
-				"command": "cline.settingsButtonClicked",
+				"command": "edgeaicoder.settingsButtonClicked",
 				"title": "Settings",
 				"icon": "$(settings-gear)"
 			},
 			{
-				"command": "cline.openInNewTab",
+				"command": "edgeaicoder.openInNewTab",
 				"title": "Open In New Tab",
-				"category": "Cline"
+				"category": "EdgeAICoder"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "cline.plusButtonClicked",
+					"command": "edgeaicoder.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == edgeaicoder.SidebarProvider"
 				},
 				{
-					"command": "cline.mcpButtonClicked",
+					"command": "edgeaicoder.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == edgeaicoder.SidebarProvider"
 				},
 				{
-					"command": "cline.historyButtonClicked",
+					"command": "edgeaicoder.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == edgeaicoder.SidebarProvider"
 				},
 				{
-					"command": "cline.popoutButtonClicked",
+					"command": "edgeaicoder.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == edgeaicoder.SidebarProvider"
 				},
 				{
-					"command": "cline.settingsButtonClicked",
+					"command": "edgeaicoder.settingsButtonClicked",
 					"group": "navigation@5",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == edgeaicoder.SidebarProvider"
 				}
 			]
 		},
 		"configuration": {
-			"title": "Cline",
+			"title": "EdgeAICoder",
 			"properties": {
-				"cline.vsCodeLmModelSelector": {
+				"edgeaicoder.vsCodeLmModelSelector": {
 					"type": "object",
 					"properties": {
 						"vendor": {
@@ -142,7 +142,7 @@
 					},
 					"description": "Settings for VSCode Language Model API"
 				},
-				"cline.mcp.mode": {
+				"edgeaicoder.mcp.mode": {
 					"type": "string",
 					"enum": [
 						"full",
@@ -157,17 +157,17 @@
 					"default": "full",
 					"description": "Controls MCP inclusion in prompts, reduces token usage if you only need access to certain functionality."
 				},
-				"cline.enableCheckpoints": {
+				"edgeaicoder.enableCheckpoints": {
 					"type": "boolean",
 					"default": true,
 					"description": "Enables extension to save checkpoints of workspace throughout the task."
 				},
-				"cline.disableBrowserTool": {
+				"edgeaicoder.disableBrowserTool": {
 					"type": "boolean",
 					"default": false,
 					"description": "Disables extension from spawning browser session."
 				},
-				"cline.modelSettings.o3Mini.reasoningEffort": {
+				"edgeaicoder.modelSettings.o3Mini.reasoningEffort": {
 					"type": "string",
 					"enum": [
 						"low",
@@ -177,7 +177,7 @@
 					"default": "medium",
 					"description": "Controls the reasoning effort when using the o3-mini model. Higher values may result in more thorough but slower responses."
 				},
-				"cline.chromeExecutablePath": {
+				"edgeaicoder.chromeExecutablePath": {
 					"type": "string",
 					"default": null,
 					"description": "Path to Chrome executable for browser use functionality. If not set, the extension will attempt to find or download it automatically."

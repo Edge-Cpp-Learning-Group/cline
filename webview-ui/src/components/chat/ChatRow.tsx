@@ -363,7 +363,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 						<div style={headerStyle}>
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
-								{/* {message.type === "ask" ? "" : "Cline read this file:"} */}
+								{/* {message.type === "ask" ? "" : "EdgeAICoder read this file:"} */}
 								Cline wants to read this file:
 							</span>
 						</div>
@@ -428,8 +428,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view the top level files in this directory:"
-									: "Cline viewed the top level files in this directory:"}
+									? "EdgeAICoder wants to view the top level files in this directory:"
+									: "EdgeAICoder viewed the top level files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -448,8 +448,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to recursively view all files in this directory:"
-									: "Cline recursively viewed all files in this directory:"}
+									? "EdgeAICoder wants to recursively view all files in this directory:"
+									: "EdgeAICoder recursively viewed all files in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian
@@ -468,8 +468,8 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Cline wants to view source code definition names used in this directory:"
-									: "Cline viewed source code definition names used in this directory:"}
+									? "EdgeAICoder wants to view source code definition names used in this directory:"
+									: "EdgeAICoder viewed source code definition names used in this directory:"}
 							</span>
 						</div>
 						<CodeAccordian

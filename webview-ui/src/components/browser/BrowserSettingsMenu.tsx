@@ -143,7 +143,7 @@ export const BrowserSettingsMenu: React.FC<BrowserSettingsMenuProps> = ({ disabl
 									to use this setting.
 								</>
 							) : (
-								"Cline will use a Chromium browser bundled with the extension."
+								"EdgeAICoder will use a Chromium browser bundled with the extension."
 							)}
 						</SettingsDescription>
 					</SettingsGroup> */}

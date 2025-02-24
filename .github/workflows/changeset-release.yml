@@ -85,7 +85,7 @@ jobs:
                   echo "PR SHA: ${{ github.event.pull_request.head.sha }}"
 
                   if [[ "${{ github.event.action }}" == "opened" && "${{ github.actor }}" == "cline-bot" ]]; then
-                    echo "Using branch ref: ${{ github.head_ref }}"  
+                    echo "Using branch ref: ${{ github.head_ref }}"
                     echo "git_ref=${{ github.head_ref }}" >> $GITHUB_OUTPUT
                   else
                     echo "Using SHA ref: ${{ github.event.pull_request.head.sha }}"

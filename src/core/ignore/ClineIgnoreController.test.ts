@@ -5,7 +5,7 @@ import os from "os"
 import { after, beforeEach, describe, it } from "mocha"
 import "should"
 
-describe("ClineIgnoreController", () => {
+describe("EdgeAICoderIgnoreController", () => {
 	let tempDir: string
 	let controller: ClineIgnoreController
 

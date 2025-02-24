@@ -104,8 +104,8 @@ export const GlobalFileNames = {
 }
 
 export class ClineProvider implements vscode.WebviewViewProvider {
-	public static readonly sideBarId = "claude-dev.SidebarProvider" // used in package.json as the view's id. This value cannot be changed due to how vscode caches views based on their id, and updating the id would break existing instances of the extension.
-	public static readonly tabPanelId = "claude-dev.TabPanelProvider"
+	public static readonly sideBarId = "edgeaicoder.SidebarProvider" // used in package.json as the view's id. This value cannot be changed due to how vscode caches views based on their id, and updating the id would break existing instances of the extension.
+	public static readonly tabPanelId = "edgeaicoder.TabPanelProvider"
 	private static activeInstances: Set<ClineProvider> = new Set()
 	private disposables: vscode.Disposable[] = []
 	private view?: vscode.WebviewView | vscode.WebviewPanel
@@ -119,7 +119,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		readonly context: vscode.ExtensionContext,
 		private readonly outputChannel: vscode.OutputChannel,
 	) {
-		this.outputChannel.appendLine("ClineProvider instantiated")
+		this.outputChannel.appendLine("EdgeAICoderProvider instantiated")
 		ClineProvider.activeInstances.add(this)
 		this.workspaceTracker = new WorkspaceTracker(this)
 		this.mcpHub = new McpHub(this)
@@ -679,6 +679,8 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 						this.subscribeEmail(message.text)
 						break
 					case "accountLoginClicked": {
+						// Not supported by EdgeAICoder
+						/*
 						// Generate nonce for state validation
 						const nonce = crypto.randomBytes(32).toString("hex")
 						await this.storeSecret("authNonce", nonce)
@@ -693,6 +695,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 							`https://app.cline.bot/auth?state=${encodeURIComponent(nonce)}&callback_url=${encodeURIComponent(`${uriScheme || "vscode"}://saoudrizwan.claude-dev/auth`)}`,
 						)
 						vscode.env.openExternal(authUrl)
+						*/
 						break
 					}
 					case "accountLogoutClicked": {
@@ -724,7 +727,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 							// 2. Enable MCP settings if disabled
 							// Enable MCP mode if disabled
-							const mcpConfig = vscode.workspace.getConfiguration("cline.mcp")
+							const mcpConfig = vscode.workspace.getConfiguration("edgeaicoder.mcp")
 							if (mcpConfig.get<string>("mode") !== "full") {
 								await mcpConfig.update("mode", "full", true)
 							}
@@ -826,7 +829,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 						const settingsFilter = message.text || ""
 						await vscode.commands.executeCommand(
 							"workbench.action.openSettings",
-							`@ext:saoudrizwan.claude-dev ${settingsFilter}`.trim(), // trim whitespace if no settings filter
+							`@ext:edge.edgeaicoder ${settingsFilter}`.trim(), // trim whitespace if no settings filter
 						)
 						break
 					}
@@ -1035,7 +1038,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 	async ensureMcpServersDirectoryExists(): Promise<string> {
 		const userDocumentsPath = await this.getDocumentsPath()
-		const mcpServersDir = path.join(userDocumentsPath, "Cline", "MCP")
+		const mcpServersDir = path.join(userDocumentsPath, "EdgeAICoder", "MCP")
 		try {
 			await fs.mkdir(mcpServersDir, { recursive: true })
 		} catch (error) {
@@ -1788,7 +1791,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		}
 
 		const o3MiniReasoningEffort = vscode.workspace
-			.getConfiguration("cline.modelSettings.o3Mini")
+			.getConfiguration("edgeaicoder.modelSettings.o3Mini")
 			.get("reasoningEffort", "medium")
 
 		return {
