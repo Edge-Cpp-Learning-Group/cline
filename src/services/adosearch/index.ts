@@ -101,13 +101,25 @@ export class AzureDevOpsCodeSearch {
 		this.lastSearchText = searchText
 		this.filePattern = filePattern
 
+		// Regex is not supported here
+		searchText = searchText.replace(/\.\*/g, "*")
+
 		if (filePattern) {
-			// *.h,*.cc => (file:*.h OR file:*.cc)
-			// filepattern = *.h,*.cc
+			// filepattern:
+			//   *.h,*.cc => (file:*.h OR file:*.cc)
+			//   path1*/path2*/*.h,path3/path4*/*.cc => ((path:path1*/path2* AND file:*.h) OR (path:path3/path4* AND file:*.cc))
 			const filePatterns = filePattern
 				.split(",")
-				.map((pattern) => `file:${pattern.trim()}`)
+				.map((pattern) => {
+					const parts = pattern.split("/")
+					if (parts.length === 1) {
+						return `file:${parts[0].trim()}`
+					}
+					const filePattern = parts.pop()
+					return `(path:${parts.join("/")} AND file:${filePattern?.trim()})`
+				})
 				.join(" OR ")
+
 			searchText = `${searchText} AND (${filePatterns})`
 		} else {
 			searchText = `${searchText} NOT (file:*.spec* OR file: *.css OR file: *.md OR file: *.json OR file: *.xtb)`
