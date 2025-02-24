@@ -8,7 +8,6 @@ export function createClineAPI(outputChannel: vscode.OutputChannel, sidebarProvi
 			await sidebarProvider.updateCustomInstructions(value)
 			outputChannel.appendLine("Custom instructions set")
 		},
-
 		getCustomInstructions: async () => {
 			return (await sidebarProvider.getGlobalState("customInstructions")) as string | undefined
 		},

@@ -80,6 +80,7 @@ export interface ExtensionState {
 		email: string | null
 		photoURL: string | null
 	}
+	adoPat?: string
 }
 
 export interface ClineMessage {

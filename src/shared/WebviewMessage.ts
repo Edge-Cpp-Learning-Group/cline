@@ -50,6 +50,8 @@ export interface WebviewMessage {
 		| "searchCommits"
 		| "showMcpView"
 		| "fetchLatestMcpServersFromHub"
+		| "adoPat"
+		| "log"
 	// | "relaunchChromeDebugMode"
 	text?: string
 	disabled?: boolean
@@ -68,6 +70,8 @@ export interface WebviewMessage {
 	serverName?: string
 	toolName?: string
 	autoApprove?: boolean
+
+	message?: any[]
 }
 
 export type ClineAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"

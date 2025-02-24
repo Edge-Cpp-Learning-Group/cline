@@ -93,6 +93,7 @@ type GlobalStateKey =
 	| "requestyModelId"
 	| "togetherModelId"
 	| "mcpMarketplaceCatalog"
+	| "adoPat"
 
 export const GlobalFileNames = {
 	apiConversationHistory: "api_conversation_history.json",
@@ -263,7 +264,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 	async initClineWithTask(task?: string, images?: string[]) {
 		await this.clearTask() // ensures that an existing task doesn't exist before starting a new one, although this shouldn't be possible since user must clear task before starting a new one
-		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
+		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings, adoPat } =
 			await this.getState()
 		this.cline = new Cline(
 			this,
@@ -272,6 +273,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			browserSettings,
 			chatSettings,
 			customInstructions,
+			adoPat,
 			task,
 			images,
 		)
@@ -279,7 +281,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 	async initClineWithHistoryItem(historyItem: HistoryItem) {
 		await this.clearTask()
-		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings } =
+		const { apiConfiguration, customInstructions, autoApprovalSettings, browserSettings, chatSettings, adoPat } =
 			await this.getState()
 		this.cline = new Cline(
 			this,
@@ -288,6 +290,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			browserSettings,
 			chatSettings,
 			customInstructions,
+			adoPat,
 			undefined,
 			undefined,
 			historyItem,
@@ -532,6 +535,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 						break
 					case "customInstructions":
 						await this.updateCustomInstructions(message.text)
+						break
+					case "adoPat":
+						await this.updateAdoPat(message.text)
 						break
 					case "autoApprovalSettings":
 						if (message.autoApprovalSettings) {
@@ -1001,6 +1007,11 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		await this.postStateToWebview()
 	}
 
+	async updateAdoPat(pat?: string) {
+		await this.updateGlobalState("adoPat", pat || undefined)
+		await this.postStateToWebview()
+	}
+
 	// MCP
 
 	async getDocumentsPath(): Promise<string> {
@@ -1242,7 +1253,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			})
 
 			// Create task with context from README
-			const task = `Set up the MCP server from ${mcpDetails.githubUrl}. 
+			const task = `Set up the MCP server from ${mcpDetails.githubUrl}.
 Use "${mcpDetails.mcpId}" as the server name in cline_mcp_settings.json.
 Once installed, demonstrate the server's capabilities by using one of its tools.
 Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
@@ -1581,6 +1592,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			chatSettings,
 			userInfo,
 			authToken,
+			adoPat,
 		} = await this.getState()
 
 		return {
@@ -1599,6 +1611,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			chatSettings,
 			isLoggedIn: !!authToken,
 			userInfo,
+			adoPat,
 		}
 	}
 
@@ -1705,6 +1718,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			previousModeModelInfo,
 			qwenApiLine,
 			liteLlmApiKey,
+			adoPat,
 		] = await Promise.all([
 			this.getGlobalState("apiProvider") as Promise<ApiProvider | undefined>,
 			this.getGlobalState("apiModelId") as Promise<string | undefined>,
@@ -1756,6 +1770,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			this.getGlobalState("previousModeModelInfo") as Promise<ModelInfo | undefined>,
 			this.getGlobalState("qwenApiLine") as Promise<string | undefined>,
 			this.getSecret("liteLlmApiKey") as Promise<string | undefined>,
+			this.getGlobalState("adoPat") as Promise<string | undefined>,
 		])
 
 		let apiProvider: ApiProvider
@@ -1830,6 +1845,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			previousModeApiProvider,
 			previousModeModelId,
 			previousModeModelInfo,
+			adoPat,
 		}
 	}
 
@@ -1926,5 +1942,10 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			type: "action",
 			action: "chatButtonClicked",
 		})
+	}
+
+	async getStateToWebview() {
+		const state = await this.getState()
+		return state
 	}
 }

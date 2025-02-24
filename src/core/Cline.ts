@@ -22,7 +22,7 @@ import { BrowserSession } from "../services/browser/BrowserSession"
 import { UrlContentFetcher } from "../services/browser/UrlContentFetcher"
 import { listFiles } from "../services/glob/list-files"
 import { regexSearchFiles } from "../services/ripgrep"
-// import { searchFilesWithADO } from "../services/adosearch"
+import { searchFilesWithADO, getRepoInfo } from "../services/adosearch"
 import { parseSourceCodeForDefinitionsTopLevel } from "../services/tree-sitter"
 import { ApiConfiguration } from "../shared/api"
 import { findLast, findLastIndex } from "../shared/array"
@@ -76,6 +76,7 @@ export class Cline {
 	browserSession: BrowserSession
 	private didEditFile: boolean = false
 	customInstructions?: string
+	adoPat?: string
 	autoApprovalSettings: AutoApprovalSettings
 	private browserSettings: BrowserSettings
 	private chatSettings: ChatSettings
@@ -121,6 +122,7 @@ export class Cline {
 		browserSettings: BrowserSettings,
 		chatSettings: ChatSettings,
 		customInstructions?: string,
+		adoPat?: string,
 		task?: string,
 		images?: string[],
 		historyItem?: HistoryItem,
@@ -139,6 +141,7 @@ export class Cline {
 		this.autoApprovalSettings = autoApprovalSettings
 		this.browserSettings = browserSettings
 		this.chatSettings = chatSettings
+		this.adoPat = adoPat
 		if (historyItem) {
 			this.taskId = historyItem.id
 			this.conversationHistoryDeletedRange = historyItem.conversationHistoryDeletedRange
@@ -2147,13 +2150,24 @@ export class Cline {
 								this.consecutiveMistakeCount = 0
 
 								const absolutePath = path.resolve(cwd, relDirPath)
-								const results = await regexSearchFiles(
-									cwd,
-									absolutePath,
-									search_text,
-									filePattern,
-									this.clineIgnoreController,
-								)
+								const repoInfo = await getRepoInfo(cwd)
+								const results = repoInfo
+									? await searchFilesWithADO(
+											cwd,
+											absolutePath,
+											search_text,
+											filePattern,
+											this.clineIgnoreController,
+											repoInfo,
+											this.adoPat,
+										)
+									: await regexSearchFiles(
+											cwd,
+											absolutePath,
+											search_text,
+											filePattern,
+											this.clineIgnoreController,
+										)
 
 								const completeMessage = JSON.stringify({
 									...sharedMessageProps,

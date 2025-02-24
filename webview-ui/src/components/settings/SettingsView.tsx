@@ -1,4 +1,4 @@
-import { VSCodeButton, VSCodeLink, VSCodeTextArea } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeLink, VSCodeTextArea, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { memo, useEffect, useState } from "react"
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration, validateModelId } from "../../utils/validate"
@@ -12,7 +12,8 @@ type SettingsViewProps = {
 }
 
 const SettingsView = ({ onDone }: SettingsViewProps) => {
-	const { apiConfiguration, version, customInstructions, setCustomInstructions, openRouterModels } = useExtensionState()
+	const { apiConfiguration, version, customInstructions, setCustomInstructions, openRouterModels, adoPat, setAdoPat } =
+		useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
 
@@ -29,6 +30,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				type: "customInstructions",
 				text: customInstructions,
 			})
+			vscode.postMessage({
+				type: "adoPat",
+				text: adoPat,
+			})
 			onDone()
 		}
 	}
@@ -41,7 +46,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	// validate as soon as the component is mounted
 	/*
 	useEffect will use stale values of variables if they are not included in the dependency array. so trying to use useEffect with a dependency array of only one value for example will use any other variables' old values. In most cases you don't want this, and should opt to use react-use hooks.
-	
+
 	useEffect(() => {
 		// uses someVar and anotherVar
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,6 +116,25 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 							color: "var(--vscode-descriptionForeground)",
 						}}>
 						These instructions are added to the end of the system prompt sent with every request.
+					</p>
+				</div>
+
+				<div style={{ marginBottom: 5 }}>
+					<VSCodeTextField
+						value={adoPat ?? ""}
+						style={{ width: "100%" }}
+						type="password"
+						onInput={(e: any) => setAdoPat(e.target?.value ?? "")}
+						placeholder="Enter PAT...">
+						<span style={{ fontWeight: 500 }}>PAT for ADO Search</span>
+					</VSCodeTextField>
+					<p
+						style={{
+							fontSize: "12px",
+							marginTop: "5px",
+							color: "var(--vscode-descriptionForeground)",
+						}}>
+						The PAT is used to access ADO Code Search.
 					</p>
 				</div>
 
