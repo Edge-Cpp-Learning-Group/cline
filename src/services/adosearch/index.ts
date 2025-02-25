@@ -194,7 +194,7 @@ export class AzureDevOpsCodeSearch {
 		const processedRanges = new Set<string>()
 		let lastEndLine = -1
 
-		const searchRegex = new RegExp(searchText.replace(/\*/g, ".*"), "i")
+		const searchRegex = new RegExp(searchText.replace(/\*/g, ".*").replace(/\s+/g, ".*").replace(" ", ""), "i")
 
 		for (let i = 0; i < lines.length; i++) {
 			if (searchRegex.test(lines[i])) {
@@ -242,13 +242,11 @@ export class AzureDevOpsCodeSearch {
 		}
 
 		for (const result of results.results) {
-			lines.push(`${result.path}`.slice(1))
-
 			const localContent = this.getLocalFileContent(result.path)
-
 			if (localContent) {
 				const snippet = this.extractCodeSnippet(localContent, this.lastSearchText, 2)
 				if (snippet) {
+					lines.push(`${result.path}`.slice(1))
 					lines.push(snippet)
 					lines.push("\n")
 				}
