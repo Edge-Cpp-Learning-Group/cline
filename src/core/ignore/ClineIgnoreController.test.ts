@@ -14,9 +14,9 @@ describe("EdgeAICoderIgnoreController", () => {
 		tempDir = path.join(os.tmpdir(), `llm-test-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 		await fs.mkdir(tempDir)
 
-		// Create default .clineignore file
+		// Create default .edgeaiignore file
 		await fs.writeFile(
-			path.join(tempDir, ".clineignore"),
+			path.join(tempDir, ".edgeaiignore"),
 			[".env", "*.secret", "private/", "# This is a comment", "", "temp.*", "file-with-space-at-end.* ", "**/.git/**"].join(
 				"\n",
 			),
@@ -50,8 +50,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			results.forEach((result) => result.should.be.true())
 		})
 
-		it("should block access to .clineignore file", async () => {
-			const result = controller.validateAccess(".clineignore")
+		it("should block access to .edgeaiignore file", async () => {
+			const result = controller.validateAccess(".edgeaiignore")
 			result.should.be.false()
 		})
 	})
@@ -81,7 +81,7 @@ describe("EdgeAICoderIgnoreController", () => {
 
 		it("should handle pattern edge cases", async () => {
 			await fs.writeFile(
-				path.join(tempDir, ".clineignore"),
+				path.join(tempDir, ".edgeaiignore"),
 				["*.secret", "private/", "*.tmp", "data-*.json", "temp/*"].join("\n"),
 			)
 
@@ -103,7 +103,7 @@ describe("EdgeAICoderIgnoreController", () => {
 
 		// it("should handle negation patterns", async () => {
 		// 	await fs.writeFile(
-		// 		path.join(tempDir, ".clineignore"),
+		// 		path.join(tempDir, ".edgeaiignore"),
 		// 		[
 		// 			"temp/*", // Ignore everything in temp
 		// 			"!temp/allowed/*", // But allow files in temp/allowed
@@ -148,10 +148,10 @@ describe("EdgeAICoderIgnoreController", () => {
 		// 	results[9].should.be.true() // assets/public/data.json
 		// })
 
-		it("should handle comments in .clineignore", async () => {
-			// Create a new .clineignore with comments
+		it("should handle comments in .edgeaiignore", async () => {
+			// Create a new .edgeaiignore with comments
 			await fs.writeFile(
-				path.join(tempDir, ".clineignore"),
+				path.join(tempDir, ".edgeaiignore"),
 				["# Comment line", "*.secret", "private/", "temp.*"].join("\n"),
 			)
 
@@ -217,8 +217,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			result.should.be.true()
 		})
 
-		it("should handle missing .clineignore gracefully", async () => {
-			// Create a new controller in a directory without .clineignore
+		it("should handle missing .edgeaiignore gracefully", async () => {
+			// Create a new controller in a directory without .edgeaiignore
 			const emptyDir = path.join(os.tmpdir(), `llm-test-empty-${Date.now()}`)
 			await fs.mkdir(emptyDir)
 
@@ -232,8 +232,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			}
 		})
 
-		it("should handle empty .clineignore", async () => {
-			await fs.writeFile(path.join(tempDir, ".clineignore"), "")
+		it("should handle empty .edgeaiignore", async () => {
+			await fs.writeFile(path.join(tempDir, ".edgeaiignore"), "")
 
 			controller = new ClineIgnoreController(tempDir)
 			await controller.initialize()

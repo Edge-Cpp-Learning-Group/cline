@@ -31,6 +31,7 @@ import { BrowserSettings } from "../shared/BrowserSettings"
 import { ChatSettings } from "../shared/ChatSettings"
 import { combineApiRequests } from "../shared/combineApiRequests"
 import { combineCommandSequences, COMMAND_REQ_APP_STRING } from "../shared/combineCommandSequences"
+import { defaultEdgeRules } from "../integrations/builtin/edge/rules"
 import {
 	BrowserAction,
 	BrowserActionResult,
@@ -60,6 +61,7 @@ import { formatResponse } from "./prompts/responses"
 import { addUserInstructions, SYSTEM_PROMPT } from "./prompts/system"
 import { getNextTruncationRange, getTruncatedMessages } from "./sliding-window"
 import { ClineProvider, GlobalFileNames } from "./webview/ClineProvider"
+import { isEdgeCodebase, isLargeCodebase } from "../services/codebase"
 
 const cwd = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0) ?? path.join(os.homedir(), "Desktop") // may or may not exist but fs checking existence would immediately ask for permission which would be bad UX, need to come up with a better solution
 
@@ -1281,17 +1283,24 @@ export class Cline {
 			try {
 				const ruleFileContent = (await fs.readFile(clineRulesFilePath, "utf8")).trim()
 				if (ruleFileContent) {
-					clineRulesFileInstructions = `# .clinerules\n\nThe following is provided by a root-level .clinerules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${ruleFileContent}`
+					clineRulesFileInstructions = `# .edgeairules\n\nThe following is provided by a root-level .edgeairules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${ruleFileContent}`
 				}
 			} catch {
-				console.error(`Failed to read .clinerules file at ${clineRulesFilePath}`)
+				console.error(`Failed to read .edgeairules file at ${clineRulesFilePath}`)
+			}
+		}
+
+		if (!clineRulesFileInstructions) {
+			const repoInfo = await getRepoInfo(cwd)
+			if (repoInfo && repoInfo.organization === "microsoft" && repoInfo.repository === "chromium.src") {
+				clineRulesFileInstructions = `# .edgeairules\n\nThe following is provided by a root-level .edgeairules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${defaultEdgeRules}`
 			}
 		}
 
 		const clineIgnoreContent = this.clineIgnoreController.clineIgnoreContent
 		let clineIgnoreInstructions: string | undefined
 		if (clineIgnoreContent) {
-			clineIgnoreInstructions = `# .clineignore\n\n(The following is provided by a root-level .clineignore file where the user has specified files and directories that should not be accessed. When using list_files, you'll notice a ${LOCK_TEXT_SYMBOL} next to files that are blocked. Attempting to access the file's contents e.g. through read_file will result in an error.)\n\n${clineIgnoreContent}\n.clineignore`
+			clineIgnoreInstructions = `# .edgeaiignore\n\n(The following is provided by a root-level .edgeaiignore file where the user has specified files and directories that should not be accessed. When using list_files, you'll notice a ${LOCK_TEXT_SYMBOL} next to files that are blocked. Attempting to access the file's contents e.g. through read_file will result in an error.)\n\n${clineIgnoreContent}\n.edgeaiignore`
 		}
 
 		if (settingsCustomInstructions || clineRulesFileInstructions) {
@@ -3491,7 +3500,12 @@ export class Cline {
 				// don't want to immediately access desktop since it would show permission popup
 				details += "(Desktop files not shown automatically. Use list_files to explore if needed.)"
 			} else {
-				const [files, didHitLimit] = await listFiles(cwd, true, 200)
+				const isLarge = await isLargeCodebase(cwd)
+				if (isLarge) {
+					details += "(The project is too large to list all files, use list_files to explore if more)\n"
+				}
+
+				const [files, didHitLimit] = await listFiles(cwd, !isLarge, 1000)
 				const result = formatResponse.formatFilesList(cwd, files, didHitLimit, this.clineIgnoreController)
 				details += result
 			}

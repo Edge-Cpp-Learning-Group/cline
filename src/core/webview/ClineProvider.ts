@@ -99,8 +99,8 @@ export const GlobalFileNames = {
 	apiConversationHistory: "api_conversation_history.json",
 	uiMessages: "ui_messages.json",
 	openRouterModels: "openrouter_models.json",
-	mcpSettings: "cline_mcp_settings.json",
-	clineRules: ".clinerules",
+	mcpSettings: "edgeai_mcp_settings.json",
+	clineRules: ".edgeairules",
 }
 
 export class ClineProvider implements vscode.WebviewViewProvider {
@@ -1257,7 +1257,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 			// Create task with context from README
 			const task = `Set up the MCP server from ${mcpDetails.githubUrl}.
-Use "${mcpDetails.mcpId}" as the server name in cline_mcp_settings.json.
+Use "${mcpDetails.mcpId}" as the server name in edgeai_mcp_settings.json.
 Once installed, demonstrate the server's capabilities by using one of its tools.
 Here is the project's README to help you get started:\n\n${mcpDetails.readmeContent}\n${mcpDetails.llmsInstallationContent}`
 

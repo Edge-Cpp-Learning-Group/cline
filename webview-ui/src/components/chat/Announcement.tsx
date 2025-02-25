@@ -93,7 +93,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					)}
 				</li>
 				<li>
-					<b>Edit Cline's changes before accepting!</b> When he creates or edits a file, you can modify his
+					<b>Edit EdgeAI's changes before accepting!</b> When he creates or edits a file, you can modify his
 					changes directly in the right side of the diff view (+ hover over the 'Revert Block' arrow button in
 					the center to undo "<code>{"// rest of code here"}</code>" shenanigans)
 				</li>

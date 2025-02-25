@@ -997,7 +997,7 @@ export const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifi
 								</div>
 								<div>
 									Cline tried to access <code>{message.text}</code> which is blocked by the{" "}
-									<code>.clineignore</code>
+									<code>.edgeaiignore</code>
 									file.
 								</div>
 							</div>

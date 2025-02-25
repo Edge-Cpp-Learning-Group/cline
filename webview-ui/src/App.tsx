@@ -18,6 +18,10 @@ const AppContent = () => {
 	const [showAccount, setShowAccount] = useState(false)
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
 
+	// // Never show account in EdgeAI
+	// const showAccount = false
+	// const setShowAccount = (b: boolean) => {}
+
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
 		switch (message.type) {

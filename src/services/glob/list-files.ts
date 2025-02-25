@@ -2,8 +2,9 @@ import { globby, Options } from "globby"
 import os from "os"
 import * as path from "path"
 import { arePathsEqual } from "../../utils/path"
+import { ClineIgnoreController } from "../../core/ignore/ClineIgnoreController"
 
-export async function listFiles(dirPath: string, recursive: boolean, limit: number): Promise<[string[], boolean]> {
+export async function listFiles(dirPath: string, recursive: boolean, limit: number, deep?: number): Promise<[string[], boolean]> {
 	const absolutePath = path.resolve(dirPath)
 	// Do not allow listing files in root or home directory, which cline tends to want to do when the user's prompt is vague.
 	const root = process.platform === "win32" ? path.parse(absolutePath).root : "/"
@@ -33,6 +34,7 @@ export async function listFiles(dirPath: string, recursive: boolean, limit: numb
 		"deps",
 		"pkg",
 		"Pods",
+		"build",
 		".*", // '!**/.*' excludes hidden directories, while '!**/.*/**' excludes only their contents. This way we are at least aware of the existence of hidden directories.
 	].map((dir) => `**/${dir}/**`)
 
@@ -40,6 +42,7 @@ export async function listFiles(dirPath: string, recursive: boolean, limit: numb
 		cwd: dirPath,
 		dot: true, // do not ignore hidden files/directories
 		absolute: true,
+		deep: deep,
 		markDirectories: true, // Append a / on any directories matched (/ is used on windows as well, so dont use path.sep)
 		gitignore: recursive, // globby ignores any files that are gitignored
 		ignore: recursive ? dirsToIgnore : undefined, // just in case there is no gitignore, we ignore sensible defaults
@@ -66,7 +69,7 @@ Breadth-first traversal of directory structure level by level up to a limit:
 */
 async function globbyLevelByLevel(limit: number, options?: Options) {
 	let results: Set<string> = new Set()
-	let queue: string[] = ["base/*", "chrome/*", "components/*"]
+	let queue: string[] = ["*"]
 
 	const globbingProcess = async () => {
 		while (queue.length > 0 && results.size < limit) {
@@ -77,6 +80,7 @@ async function globbyLevelByLevel(limit: number, options?: Options) {
 				if (results.size >= limit) {
 					break
 				}
+
 				results.add(file)
 				if (file.endsWith("/")) {
 					queue.push(`${file}*`)
@@ -86,9 +90,9 @@ async function globbyLevelByLevel(limit: number, options?: Options) {
 		return Array.from(results).slice(0, limit)
 	}
 
-	// Timeout after 10 seconds and return partial results
+	// Timeout after 5 seconds and return partial results
 	const timeoutPromise = new Promise<string[]>((_, reject) => {
-		setTimeout(() => reject(new Error("Globbing timeout")), 10_000)
+		setTimeout(() => reject(new Error("Globbing timeout")), 5_000)
 	})
 	try {
 		return await Promise.race([globbingProcess(), timeoutPromise])
