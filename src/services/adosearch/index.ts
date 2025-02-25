@@ -101,8 +101,19 @@ export class AzureDevOpsCodeSearch {
 		this.lastSearchText = searchText
 		this.filePattern = filePattern
 
-		// Regex is not supported here
-		searchText = searchText.replace(/\.\*/g, "*")
+		// xx|yy => (xx OR yy)
+		// xx.*yy => (xx*yy OR xx yy)
+		// xx.*yy|zz => ((xx*yy OR xx yy) OR zz)
+		searchText = `(${searchText
+			.split("|")
+			.map((pattern) => {
+				const patterns = pattern.split(".*")
+				if (patterns.length === 1) {
+					return patterns[0].trim()
+				}
+				return `(${patterns.join("*")} OR ${patterns.join(" ")})`
+			})
+			.join(" OR ")})`
 
 		if (filePattern) {
 			// filepattern:
