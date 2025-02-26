@@ -50,9 +50,10 @@ export interface WebviewMessage {
 		| "searchCommits"
 		| "showMcpView"
 		| "fetchLatestMcpServersFromHub"
+		| "telemetrySetting"
+		| "openSettings"
+		// | "relaunchChromeDebugMode"
 		| "adoPat"
-		| "log"
-	// | "relaunchChromeDebugMode"
 	text?: string
 	disabled?: boolean
 	askResponse?: ClineAskResponse

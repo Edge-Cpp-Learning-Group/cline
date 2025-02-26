@@ -11,11 +11,11 @@ const AccountView = ({ onDone }: AccountViewProps) => {
 	const { isLoggedIn, userInfo } = useExtensionState()
 
 	const handleLogin = () => {
-		vscode.postMessage({ type: "accountLoginClicked" })
+		//		vscode.postMessage({ type: "accountLoginClicked" })
 	}
 
 	const handleLogout = () => {
-		vscode.postMessage({ type: "accountLogoutClicked" })
+		//		vscode.postMessage({ type: "accountLogoutClicked" })
 	}
 
 	return (

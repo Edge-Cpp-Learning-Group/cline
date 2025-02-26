@@ -1,19 +1,28 @@
-import { VSCodeButton, VSCodeLink, VSCodeTextArea, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeCheckbox, VSCodeLink, VSCodeTextArea, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import { memo, useEffect, useState } from "react"
 import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration, validateModelId } from "../../utils/validate"
 import { vscode } from "../../utils/vscode"
-import ApiOptions from "./ApiOptions"
 import SettingsButton from "../common/SettingsButton"
-const IS_DEV = false // FIXME: use flags when packaging
+import ApiOptions from "./ApiOptions"
+const { IS_DEV } = process.env
 
 type SettingsViewProps = {
 	onDone: () => void
 }
 
 const SettingsView = ({ onDone }: SettingsViewProps) => {
-	const { apiConfiguration, version, customInstructions, setCustomInstructions, openRouterModels, adoPat, setAdoPat } =
-		useExtensionState()
+	const {
+		apiConfiguration,
+		version,
+		customInstructions,
+		setCustomInstructions,
+		openRouterModels,
+		telemetrySetting,
+		setTelemetrySetting,
+		adoPat,
+		setAdoPat,
+	} = useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 	const [modelIdErrorMessage, setModelIdErrorMessage] = useState<string | undefined>(undefined)
 
@@ -29,6 +38,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			vscode.postMessage({
 				type: "customInstructions",
 				text: customInstructions,
+			})
+			vscode.postMessage({
+				type: "telemetrySetting",
+				text: telemetrySetting,
 			})
 			vscode.postMessage({
 				type: "adoPat",
@@ -178,6 +191,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						fontSize: "12px",
 						lineHeight: "1.2",
 						padding: "0 8px 15px 0",
+						display: "none",
 					}}>
 					<p
 						style={{

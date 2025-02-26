@@ -285,7 +285,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 							fontSize: "12px",
 							marginBottom: "10px",
 						}}>
-						Cline will automatically make this many API requests before asking for approval to proceed with the task.
+						EdgeAICoder will automatically make this many API requests before asking for approval to proceed with the
+						task.
 					</div>
 					<div style={{ margin: "6px 0" }}>
 						<VSCodeCheckbox
