@@ -168,9 +168,15 @@ export class AzureDevOpsCodeSearch {
 					"api-version": this.apiVersion,
 				},
 			})
+			if (response.status !== 200) {
+				throw new Error(`Search failed: ${response.status} - ${response.statusText}, please ensure your PAT is valid.`)
+			}
 			return response.data
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
+				if (error.response?.status === 401) {
+					throw new Error("Search failed: 401 - Unauthorized, please ensure your PAT is valid.")
+				}
 				throw new Error(`Search failed: ${error.response?.status} - ${error.response?.data || error.message}`)
 			}
 			throw error
@@ -289,19 +295,18 @@ export async function searchFilesWithADO(
 	const localBasePath = cwd
 
 	if (!personalAccessToken) {
-		return "Error: Azure DevOps Personal Access Token (PAT) is not set. Please configure it in settings."
+		throw new Error("Error: Azure DevOps Personal Access Token (PAT) is not set. Please configure it in settings.")
 	}
 
 	const searcher = new AzureDevOpsCodeSearch(organization, personalAccessToken, localBasePath)
 	const searchPath = directoryPath.replace(localBasePath, "")
 
-	try {
-		const results = await searcher.searchCode(searchText, project, repository, branch, searchPath, filePattern, 1000)
-		const lines = searcher.localMatch(results)
-		return limitResults(lines)
-	} catch (error) {
-		return "No results found"
+	const results = await searcher.searchCode(searchText, project, repository, branch, searchPath, filePattern, 1000)
+	const lines = searcher.localMatch(results)
+	if (lines.length === 0) {
+		return "No results found."
 	}
+	return limitResults(lines)
 }
 
 export async function getRepoInfo(baseDir: string): Promise<RepoInfo | undefined> {
