@@ -4,7 +4,13 @@ import * as path from "path"
 import { arePathsEqual } from "../../utils/path"
 import { ClineIgnoreController } from "../../core/ignore/ClineIgnoreController"
 
-export async function listFiles(dirPath: string, recursive: boolean, limit: number, deep?: number): Promise<[string[], boolean]> {
+export async function listFiles(
+	dirPath: string,
+	recursive: boolean,
+	limit: number,
+	deep?: number,
+	onlyDir?: boolean,
+): Promise<[string[], boolean]> {
 	const absolutePath = path.resolve(dirPath)
 	// Do not allow listing files in root or home directory, which cline tends to want to do when the user's prompt is vague.
 	const root = process.platform === "win32" ? path.parse(absolutePath).root : "/"
@@ -46,11 +52,15 @@ export async function listFiles(dirPath: string, recursive: boolean, limit: numb
 		markDirectories: true, // Append a / on any directories matched (/ is used on windows as well, so dont use path.sep)
 		gitignore: recursive, // globby ignores any files that are gitignored
 		ignore: recursive ? dirsToIgnore : undefined, // just in case there is no gitignore, we ignore sensible defaults
-		onlyFiles: false, // true by default, false means it will list directories on their own too
+		onlyFiles: false, // true by default, false means it will list directories on their own too,
 	}
 
 	// * globs all files in one dir, ** globs files in nested directories
-	const filePaths = recursive ? await globbyLevelByLevel(limit, options) : (await globby("*", options)).slice(0, limit)
+	const filePaths = recursive ? await globbyLevelByLevel(limit, onlyDir, options) : (await globby("*", options)).slice(0, limit)
+	if (!recursive && onlyDir) {
+		const results = filePaths.filter((filePath) => filePath.endsWith("/"))
+		return [results, results.length >= limit]
+	}
 
 	return [filePaths, filePaths.length >= limit]
 }
@@ -67,7 +77,7 @@ Breadth-first traversal of directory structure level by level up to a limit:
    - Potential for loops if symbolic links reference back to parent (we could use followSymlinks: false but that may not be ideal for some projects and it's pointless if they're not using symlinks wrong)
    - Timeout mechanism prevents infinite loops
 */
-async function globbyLevelByLevel(limit: number, options?: Options) {
+async function globbyLevelByLevel(limit: number, onlyDir?: boolean, options?: Options) {
 	let results: Set<string> = new Set()
 	let queue: string[] = ["*"]
 
@@ -81,7 +91,12 @@ async function globbyLevelByLevel(limit: number, options?: Options) {
 					break
 				}
 
-				results.add(file)
+				if (onlyDir && !file.endsWith("/")) {
+					// do nothing
+				} else {
+					results.add(file)
+				}
+
 				if (file.endsWith("/")) {
 					queue.push(`${file}*`)
 				}

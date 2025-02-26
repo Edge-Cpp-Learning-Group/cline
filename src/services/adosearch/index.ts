@@ -134,7 +134,9 @@ export class AzureDevOpsCodeSearch {
 
 			searchText = `${searchText} AND (${filePatterns})`
 		} else {
-			searchText = `${searchText} NOT (file:*.spec* OR file: *.css OR file: *.md OR file: *.json OR file: *.xtb)`
+			// exclude certain file types
+			const excludedFileTypes = ["spec", "css", "md", "json", "xtb", "csv", "xml", "xmb", "resx"]
+			searchText = `${searchText} NOT (${excludedFileTypes.map((type) => `file:*.${type}`).join(" OR ")})`
 		}
 		searchText += ` NOT file:*test*`
 
@@ -199,6 +201,8 @@ export class AzureDevOpsCodeSearch {
 		const lines = content.split("\n")
 		const results: string[] = []
 		const processedRanges = new Set<string>()
+		const maxLineLength = 256
+		const maxContextLines = 200
 		let lastEndLine = -1
 
 		const searchRegex = new RegExp(searchText.replace(/\*/g, ".*").replace(/\s+/g, ".*").replace(" ", ""), "i")
@@ -229,13 +233,21 @@ export class AzureDevOpsCodeSearch {
 							prefix = ""
 						}
 
-						snippet.push(`${prefix}${j + 1}: ${lines[j]}`)
+						snippet.push(
+							`${prefix}${j + 1}: ${lines[j].length > maxLineLength ? lines[j].slice(0, maxLineLength) + "..." : lines[j]}`,
+						)
 					}
 
 					results.push(snippet.join("\n"))
 					processedRanges.add(`${startLine}-${endLine}`)
 					lastEndLine = endLine
 				}
+			}
+
+			if (results.length >= maxContextLines) {
+				results.push("------")
+				results.push(`... and ${(lines.length - i) * 3} more lines`)
+				break
 			}
 		}
 

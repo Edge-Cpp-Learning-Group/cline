@@ -15,12 +15,14 @@ const AppContent = () => {
 	const [showSettings, setShowSettings] = useState(false)
 	const [showHistory, setShowHistory] = useState(false)
 	const [showMcp, setShowMcp] = useState(false)
-	const [showAccount, setShowAccount] = useState(false)
-	const [showAnnouncement, setShowAnnouncement] = useState(false)
+	// const [showAccount, setShowAccount] = useState(false)
+	// const [showAnnouncement, setShowAnnouncement] = useState(false)
 
-	// // Never show account in EdgeAI
-	// const showAccount = false
-	// const setShowAccount = (b: boolean) => {}
+	// Never show account in EdgeAI
+	const showAccount = false
+	const setShowAccount = (b: boolean) => {}
+	const showAnnouncement = false
+	const setShowAnnouncement = (b: boolean) => {}
 
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data

@@ -3509,7 +3509,7 @@ export class Cline {
 					details += "(The project is too large to list all files, use list_files to explore if more)\n"
 				}
 
-				const [files, didHitLimit] = await listFiles(cwd, !isLarge, 1000)
+				const [files, didHitLimit] = await listFiles(cwd, true, 1000, isLarge ? 2 : 0, isLarge)
 				const result = formatResponse.formatFilesList(cwd, files, didHitLimit, this.clineIgnoreController)
 				details += result
 			}
