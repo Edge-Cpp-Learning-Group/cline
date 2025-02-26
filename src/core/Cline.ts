@@ -3374,22 +3374,26 @@ export class Cline {
 		}
 
 		details += "\n\n# VSCode Open Tabs"
-		const openTabPaths = vscode.window.tabGroups.all
-			.flatMap((group) => group.tabs)
-			.map((tab) => (tab.input as vscode.TabInputText)?.uri?.fsPath)
-			.filter(Boolean)
-			.map((absolutePath) => path.relative(cwd, absolutePath))
-
-		// Filter paths through clineIgnoreController
-		const allowedOpenTabs = this.clineIgnoreController
-			.filterPaths(openTabPaths)
-			.map((p) => p.toPosix())
-			.join("\n")
-
-		if (allowedOpenTabs) {
-			details += `\n${allowedOpenTabs}`
-		} else {
+		if (await isEdgeCodebase(cwd)) {
 			details += "\n(No open tabs)"
+		} else {
+			const openTabPaths = vscode.window.tabGroups.all
+				.flatMap((group) => group.tabs)
+				.map((tab) => (tab.input as vscode.TabInputText)?.uri?.fsPath)
+				.filter(Boolean)
+				.map((absolutePath) => path.relative(cwd, absolutePath))
+
+			// Filter paths through clineIgnoreController
+			const allowedOpenTabs = this.clineIgnoreController
+				.filterPaths(openTabPaths)
+				.map((p) => p.toPosix())
+				.join("\n")
+
+			if (allowedOpenTabs) {
+				details += `\n${allowedOpenTabs}`
+			} else {
+				details += "\n(No open tabs)"
+			}
 		}
 
 		const busyTerminals = this.terminalManager.getTerminals(true)

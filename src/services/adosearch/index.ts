@@ -3,6 +3,7 @@ import * as fs from "fs"
 import * as path from "path"
 import { ClineIgnoreController } from "../../core/ignore/ClineIgnoreController"
 import simpleGit, { SimpleGit } from "simple-git"
+import { searchChromiumCodeBase } from "./query_cs"
 
 interface SearchResult {
 	count: number
@@ -260,6 +261,41 @@ export class AzureDevOpsCodeSearch {
 		}
 		return lines
 	}
+
+	localMatchAll(adoResults: SearchResult, csResultFileList: string[]): string[] {
+		let fileList: string[] = []
+		if (adoResults.results) {
+			for (const result of adoResults.results) {
+				fileList.push(result.path.slice(1))
+			}
+		}
+		if (csResultFileList) {
+			for (const result of csResultFileList) {
+				fileList.push(result)
+			}
+		}
+		// dedupe fileList
+		fileList = [...new Set(fileList)]
+
+		let lines: string[] = []
+		if (!fileList) {
+			return lines
+		}
+
+		for (const file of fileList) {
+			const localContent = this.getLocalFileContent(file)
+			if (localContent) {
+				const snippet = this.extractCodeSnippet(localContent, this.lastSearchText, 2)
+				if (snippet) {
+					lines.push(`${file}`)
+					lines.push(snippet)
+					lines.push("\n")
+				}
+			}
+		}
+
+		return lines
+	}
 }
 
 function limitResults(lines: string[]): string {
@@ -301,12 +337,15 @@ export async function searchFilesWithADO(
 	const searcher = new AzureDevOpsCodeSearch(organization, personalAccessToken, localBasePath)
 	const searchPath = directoryPath.replace(localBasePath, "")
 
-	const results = await searcher.searchCode(searchText, project, repository, branch, searchPath, filePattern, 1000)
-	const lines = searcher.localMatch(results)
-	if (lines.length === 0) {
-		return "No results found."
+	try {
+		const results = await searcher.searchCode(searchText, project, repository, branch, searchPath, filePattern, 1000)
+		const lines = searcher.localMatch(results)
+		// const fileList = await searchChromiumCodeBase(searchText, 25)
+		// const lines = searcher.localMatchAll(results, fileList)
+		return limitResults(lines)
+	} catch (error) {
+		return "No results found"
 	}
-	return limitResults(lines)
 }
 
 export async function getRepoInfo(baseDir: string): Promise<RepoInfo | undefined> {
