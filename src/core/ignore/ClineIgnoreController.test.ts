@@ -5,7 +5,7 @@ import os from "os"
 import { after, beforeEach, describe, it } from "mocha"
 import "should"
 
-describe("EdgeAICoderIgnoreController", () => {
+describe("EclineIgnoreController", () => {
 	let tempDir: string
 	let controller: ClineIgnoreController
 
@@ -14,9 +14,9 @@ describe("EdgeAICoderIgnoreController", () => {
 		tempDir = path.join(os.tmpdir(), `llm-test-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 		await fs.mkdir(tempDir)
 
-		// Create default .edgeaiignore file
+		// Create default .eclineignore file
 		await fs.writeFile(
-			path.join(tempDir, ".edgeaiignore"),
+			path.join(tempDir, ".eclineignore"),
 			[".env", "*.secret", "private/", "# This is a comment", "", "temp.*", "file-with-space-at-end.* ", "**/.git/**"].join(
 				"\n",
 			),
@@ -50,8 +50,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			results.forEach((result) => result.should.be.true())
 		})
 
-		it("should block access to .edgeaiignore file", async () => {
-			const result = controller.validateAccess(".edgeaiignore")
+		it("should block access to .eclineignore file", async () => {
+			const result = controller.validateAccess(".eclineignore")
 			result.should.be.false()
 		})
 	})
@@ -81,7 +81,7 @@ describe("EdgeAICoderIgnoreController", () => {
 
 		it("should handle pattern edge cases", async () => {
 			await fs.writeFile(
-				path.join(tempDir, ".edgeaiignore"),
+				path.join(tempDir, ".eclineignore"),
 				["*.secret", "private/", "*.tmp", "data-*.json", "temp/*"].join("\n"),
 			)
 
@@ -103,7 +103,7 @@ describe("EdgeAICoderIgnoreController", () => {
 
 		// it("should handle negation patterns", async () => {
 		// 	await fs.writeFile(
-		// 		path.join(tempDir, ".edgeaiignore"),
+		// 		path.join(tempDir, ".eclineignore"),
 		// 		[
 		// 			"temp/*", // Ignore everything in temp
 		// 			"!temp/allowed/*", // But allow files in temp/allowed
@@ -148,10 +148,10 @@ describe("EdgeAICoderIgnoreController", () => {
 		// 	results[9].should.be.true() // assets/public/data.json
 		// })
 
-		it("should handle comments in .edgeaiignore", async () => {
-			// Create a new .edgeaiignore with comments
+		it("should handle comments in .eclineignore", async () => {
+			// Create a new .eclineignore with comments
 			await fs.writeFile(
-				path.join(tempDir, ".edgeaiignore"),
+				path.join(tempDir, ".eclineignore"),
 				["# Comment line", "*.secret", "private/", "temp.*"].join("\n"),
 			)
 
@@ -217,8 +217,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			result.should.be.true()
 		})
 
-		it("should handle missing .edgeaiignore gracefully", async () => {
-			// Create a new controller in a directory without .edgeaiignore
+		it("should handle missing .eclineignore gracefully", async () => {
+			// Create a new controller in a directory without .eclineignore
 			const emptyDir = path.join(os.tmpdir(), `llm-test-empty-${Date.now()}`)
 			await fs.mkdir(emptyDir)
 
@@ -232,8 +232,8 @@ describe("EdgeAICoderIgnoreController", () => {
 			}
 		})
 
-		it("should handle empty .edgeaiignore", async () => {
-			await fs.writeFile(path.join(tempDir, ".edgeaiignore"), "")
+		it("should handle empty .eclineignore", async () => {
+			await fs.writeFile(path.join(tempDir, ".eclineignore"), "")
 
 			controller = new ClineIgnoreController(tempDir)
 			await controller.initialize()

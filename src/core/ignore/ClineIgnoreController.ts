@@ -9,7 +9,7 @@ export const LOCK_TEXT_SYMBOL = "\u{1F512}"
 /**
  * Controls LLM access to files by enforcing ignore patterns.
  * Designed to be instantiated once in Cline.ts and passed to file manipulation services.
- * Uses the 'ignore' library to support standard .gitignore syntax in .edgeaiignore files.
+ * Uses the 'ignore' library to support standard .gitignore syntax in .eclineignore files.
  */
 export class ClineIgnoreController {
 	private cwd: string
@@ -21,7 +21,7 @@ export class ClineIgnoreController {
 		this.cwd = cwd
 		this.ignoreInstance = ignore()
 		this.clineIgnoreContent = undefined
-		// Set up file watcher for .edgeaiignore
+		// Set up file watcher for .eclineignore
 		this.setupFileWatcher()
 	}
 
@@ -34,10 +34,10 @@ export class ClineIgnoreController {
 	}
 
 	/**
-	 * Set up the file watcher for .edgeaiignore changes
+	 * Set up the file watcher for .eclineignore changes
 	 */
 	private setupFileWatcher(): void {
-		const clineignorePattern = new vscode.RelativePattern(this.cwd, ".edgeaiignore")
+		const clineignorePattern = new vscode.RelativePattern(this.cwd, ".eclineignore")
 		const fileWatcher = vscode.workspace.createFileSystemWatcher(clineignorePattern)
 
 		// Watch for changes and updates
@@ -58,24 +58,24 @@ export class ClineIgnoreController {
 	}
 
 	/**
-	 * Load custom patterns from .edgeaiignore if it exists
+	 * Load custom patterns from .eclineignore if it exists
 	 */
 	private async loadClineIgnore(): Promise<void> {
 		try {
 			// Reset ignore instance to prevent duplicate patterns
 			this.ignoreInstance = ignore()
-			const ignorePath = path.join(this.cwd, ".edgeaiignore")
+			const ignorePath = path.join(this.cwd, ".eclineignore")
 			if (await fileExistsAtPath(ignorePath)) {
 				const content = await fs.readFile(ignorePath, "utf8")
 				this.clineIgnoreContent = content
 				this.ignoreInstance.add(content)
-				this.ignoreInstance.add(".edgeaiignore")
+				this.ignoreInstance.add(".eclineignore")
 			} else {
 				this.clineIgnoreContent = undefined
 			}
 		} catch (error) {
 			// Should never happen: reading file failed even though it exists
-			console.error("Unexpected error loading .edgeaiignore:", error)
+			console.error("Unexpected error loading .eclineignore:", error)
 		}
 	}
 
@@ -85,7 +85,7 @@ export class ClineIgnoreController {
 	 * @returns true if file is accessible, false if ignored
 	 */
 	validateAccess(filePath: string): boolean {
-		// Always allow access if .edgeaiignore does not exist
+		// Always allow access if .eclineignore does not exist
 		if (!this.clineIgnoreContent) {
 			return true
 		}
@@ -109,7 +109,7 @@ export class ClineIgnoreController {
 	 * @returns path of file that is being accessed if it is being accessed, undefined if command is allowed
 	 */
 	validateCommand(command: string): string | undefined {
-		// Always allow if no .edgeaiignore exists
+		// Always allow if no .eclineignore exists
 		if (!this.clineIgnoreContent) {
 			return undefined
 		}

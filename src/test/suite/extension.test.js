@@ -6,7 +6,7 @@ describe("Extension Tests", function () {
 
 	it("should activate extension successfully", async () => {
 		// Get the extension
-		const extension = vscode.extensions.getExtension("edge.edgeaicoder")
+		const extension = vscode.extensions.getExtension("edge.ecline")
 		expect(extension).to.not.be.undefined
 
 		// Activate the extension if not already activated
@@ -18,7 +18,7 @@ describe("Extension Tests", function () {
 
 	it("should open sidebar view", async () => {
 		// Execute the command to open sidebar
-		await vscode.commands.executeCommand("edgeaicoder.plusButtonClicked")
+		await vscode.commands.executeCommand("ecline.plusButtonClicked")
 
 		// Wait for sidebar to be visible
 		await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -31,17 +31,17 @@ describe("Extension Tests", function () {
 
 	it("should handle basic commands", async () => {
 		// Test basic command execution
-		await vscode.commands.executeCommand("edgeaicoder.historyButtonClicked")
+		await vscode.commands.executeCommand("ecline.historyButtonClicked")
 		// Success if no error thrown
 	})
 
 	it("should handle advanced settings configuration", async () => {
 		// Test browser session setting
-		await vscode.workspace.getConfiguration().update("edgeaicoder.disableBrowserTool", true, true)
-		const updatedConfig = vscode.workspace.getConfiguration("edgeaicoder")
+		await vscode.workspace.getConfiguration().update("ecline.disableBrowserTool", true, true)
+		const updatedConfig = vscode.workspace.getConfiguration("ecline")
 		expect(updatedConfig.get("disableBrowserTool")).to.be.true
 
 		// Reset settings
-		await vscode.workspace.getConfiguration().update("edgeaicoder.disableBrowserTool", undefined, true)
+		await vscode.workspace.getConfiguration().update("ecline.disableBrowserTool", undefined, true)
 	})
 })

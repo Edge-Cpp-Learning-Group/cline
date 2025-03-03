@@ -16,8 +16,8 @@ export class RequestyHandler implements ApiHandler {
 			baseURL: "https://router.requesty.ai/v1",
 			apiKey: this.options.requestyApiKey,
 			defaultHeaders: {
-				"HTTP-Referer": "https://edgeaicoder.bot",
-				"X-Title": "EdgeAICoder",
+				"HTTP-Referer": "https://ecline.bot",
+				"X-Title": "Ecline",
 			},
 		})
 	}

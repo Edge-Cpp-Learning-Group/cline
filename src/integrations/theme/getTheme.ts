@@ -137,5 +137,5 @@ export function mergeJson(
 }
 
 function getExtensionUri(): vscode.Uri {
-	return vscode.extensions.getExtension("edge.edgeaicoder")!.extensionUri
+	return vscode.extensions.getExtension("edge.ecline")!.extensionUri
 }

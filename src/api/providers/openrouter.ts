@@ -19,8 +19,8 @@ export class OpenRouterHandler implements ApiHandler {
 			baseURL: "https://openrouter.ai/api/v1",
 			apiKey: this.options.openRouterApiKey,
 			defaultHeaders: {
-				"HTTP-Referer": "https://edgeaicoder.bot", // Optional, for including your app on openrouter.ai rankings.
-				"X-Title": "EdgeAICoder", // Optional. Shows in rankings on openrouter.ai.
+				"HTTP-Referer": "https://ecline.bot", // Optional, for including your app on openrouter.ai rankings.
+				"X-Title": "Ecline", // Optional. Shows in rankings on openrouter.ai.
 			},
 		})
 	}

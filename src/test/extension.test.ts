@@ -6,7 +6,7 @@ import * as vscode from "vscode"
 
 const packagePath = path.join(__dirname, "..", "..", "package.json")
 
-describe("EdgeAICoder Extension", () => {
+describe("Ecline Extension", () => {
 	after(() => {
 		vscode.window.showInformationMessage("All tests done!")
 	})
@@ -21,7 +21,7 @@ describe("EdgeAICoder Extension", () => {
 
 	it("should successfully execute the plus button command", async () => {
 		await new Promise((resolve) => setTimeout(resolve, 400))
-		await vscode.commands.executeCommand("edgeaicoder.plusButtonClicked")
+		await vscode.commands.executeCommand("ecline.plusButtonClicked")
 	})
 
 	// New test to verify xvfb and webview functionality

@@ -1,6 +1,6 @@
 {
-	"name": "edgeaicoder",
-	"displayName": "EdgeAICoder",
+	"name": "ecline",
+	"displayName": "Ecline",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "1.0.1",
 	"icon": "assets/icons/icon_edge.png",
@@ -49,86 +49,86 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "edgeaicoder-ActivityBar",
-					"title": "EdgeAICoder",
+					"id": "ecline-ActivityBar",
+					"title": "Ecline",
 					"icon": "assets/icons/icon_edge.png"
 				}
 			]
 		},
 		"views": {
-			"edgeaicoder-ActivityBar": [
+			"ecline-ActivityBar": [
 				{
 					"type": "webview",
-					"id": "edgeaicoder.SidebarProvider",
+					"id": "ecline.SidebarProvider",
 					"name": ""
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "edgeaicoder.plusButtonClicked",
+				"command": "ecline.plusButtonClicked",
 				"title": "New Task",
 				"icon": "$(add)"
 			},
 			{
-				"command": "edgeaicoder.mcpButtonClicked",
+				"command": "ecline.mcpButtonClicked",
 				"title": "MCP Servers",
 				"icon": "$(extensions)"
 			},
 			{
-				"command": "edgeaicoder.historyButtonClicked",
+				"command": "ecline.historyButtonClicked",
 				"title": "History",
 				"icon": "$(history)"
 			},
 			{
-				"command": "edgeaicoder.popoutButtonClicked",
+				"command": "ecline.popoutButtonClicked",
 				"title": "Open in Editor",
 				"icon": "$(link-external)"
 			},
 			{
-				"command": "edgeaicoder.settingsButtonClicked",
+				"command": "ecline.settingsButtonClicked",
 				"title": "Settings",
 				"icon": "$(settings-gear)"
 			},
 			{
-				"command": "edgeaicoder.openInNewTab",
+				"command": "ecline.openInNewTab",
 				"title": "Open In New Tab",
-				"category": "EdgeAICoder"
+				"category": "Ecline"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "edgeaicoder.plusButtonClicked",
+					"command": "ecline.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "view == edgeaicoder.SidebarProvider"
+					"when": "view == ecline.SidebarProvider"
 				},
 				{
-					"command": "edgeaicoder.mcpButtonClicked",
+					"command": "ecline.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "view == edgeaicoder.SidebarProvider"
+					"when": "view == ecline.SidebarProvider"
 				},
 				{
-					"command": "edgeaicoder.historyButtonClicked",
+					"command": "ecline.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "view == edgeaicoder.SidebarProvider"
+					"when": "view == ecline.SidebarProvider"
 				},
 				{
-					"command": "edgeaicoder.popoutButtonClicked",
+					"command": "ecline.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "view == edgeaicoder.SidebarProvider"
+					"when": "view == ecline.SidebarProvider"
 				},
 				{
-					"command": "edgeaicoder.settingsButtonClicked",
+					"command": "ecline.settingsButtonClicked",
 					"group": "navigation@5",
-					"when": "view == edgeaicoder.SidebarProvider"
+					"when": "view == ecline.SidebarProvider"
 				}
 			]
 		},
 		"configuration": {
-			"title": "EdgeAICoder",
+			"title": "Ecline",
 			"properties": {
-				"edgeaicoder.vsCodeLmModelSelector": {
+				"ecline.vsCodeLmModelSelector": {
 					"type": "object",
 					"properties": {
 						"vendor": {
@@ -142,7 +142,7 @@
 					},
 					"description": "Settings for VSCode Language Model API"
 				},
-				"edgeaicoder.mcp.mode": {
+				"ecline.mcp.mode": {
 					"type": "string",
 					"enum": [
 						"full",
@@ -157,17 +157,17 @@
 					"default": "full",
 					"description": "Controls MCP inclusion in prompts, reduces token usage if you only need access to certain functionality."
 				},
-				"edgeaicoder.enableCheckpoints": {
+				"ecline.enableCheckpoints": {
 					"type": "boolean",
 					"default": true,
 					"description": "Enables extension to save checkpoints of workspace throughout the task."
 				},
-				"edgeaicoder.disableBrowserTool": {
+				"ecline.disableBrowserTool": {
 					"type": "boolean",
 					"default": false,
 					"description": "Disables extension from spawning browser session."
 				},
-				"edgeaicoder.modelSettings.o3Mini.reasoningEffort": {
+				"ecline.modelSettings.o3Mini.reasoningEffort": {
 					"type": "string",
 					"enum": [
 						"low",
@@ -177,7 +177,7 @@
 					"default": "medium",
 					"description": "Controls the reasoning effort when using the o3-mini model. Higher values may result in more thorough but slower responses."
 				},
-				"edgeaicoder.chromeExecutablePath": {
+				"ecline.chromeExecutablePath": {
 					"type": "string",
 					"default": null,
 					"description": "Path to Chrome executable for browser use functionality. If not set, the extension will attempt to find or download it automatically."

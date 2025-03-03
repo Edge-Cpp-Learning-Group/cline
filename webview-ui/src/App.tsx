@@ -18,7 +18,7 @@ const AppContent = () => {
 	// const [showAccount, setShowAccount] = useState(false)
 	// const [showAnnouncement, setShowAnnouncement] = useState(false)
 
-	// Never show account in EdgeAI
+	// Never show account in Ecline
 	const showAccount = false
 	const setShowAccount = (b: boolean) => {}
 	const showAnnouncement = false

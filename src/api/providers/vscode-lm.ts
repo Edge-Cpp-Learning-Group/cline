@@ -155,7 +155,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			this.dispose()
 
 			throw new Error(
-				`EdgeAICoder <Language Model API>: Failed to initialize handler: ${error instanceof Error ? error.message : "Unknown error"}`,
+				`Ecline <Language Model API>: Failed to initialize handler: ${error instanceof Error ? error.message : "Unknown error"}`,
 			)
 		}
 	}
@@ -205,7 +205,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			}
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : "Unknown error"
-			throw new Error(`EdgeAICoder <Language Model API>: Failed to select model: ${errorMessage}`)
+			throw new Error(`Ecline <Language Model API>: Failed to select model: ${errorMessage}`)
 		}
 	}
 
@@ -239,18 +239,18 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 	private async countTokens(text: string | vscode.LanguageModelChatMessage): Promise<number> {
 		// Check for required dependencies
 		if (!this.client) {
-			console.warn("EdgeAICoder <Language Model API>: No client available for token counting")
+			console.warn("Ecline <Language Model API>: No client available for token counting")
 			return 0
 		}
 
 		if (!this.currentRequestCancellation) {
-			console.warn("EdgeAICoder <Language Model API>: No cancellation token available for token counting")
+			console.warn("Ecline <Language Model API>: No cancellation token available for token counting")
 			return 0
 		}
 
 		// Validate input
 		if (!text) {
-			console.debug("EdgeAICoder <Language Model API>: Empty text provided for token counting")
+			console.debug("Ecline <Language Model API>: Empty text provided for token counting")
 			return 0
 		}
 
@@ -263,23 +263,23 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			} else if (text instanceof vscode.LanguageModelChatMessage) {
 				// For chat messages, ensure we have content
 				if (!text.content || (Array.isArray(text.content) && text.content.length === 0)) {
-					console.debug("EdgeAICoder <Language Model API>: Empty chat message content")
+					console.debug("Ecline <Language Model API>: Empty chat message content")
 					return 0
 				}
 				tokenCount = await this.client.countTokens(text, this.currentRequestCancellation.token)
 			} else {
-				console.warn("EdgeAICoder <Language Model API>: Invalid input type for token counting")
+				console.warn("Ecline <Language Model API>: Invalid input type for token counting")
 				return 0
 			}
 
 			// Validate the result
 			if (typeof tokenCount !== "number") {
-				console.warn("EdgeAICoder <Language Model API>: Non-numeric token count received:", tokenCount)
+				console.warn("Ecline <Language Model API>: Non-numeric token count received:", tokenCount)
 				return 0
 			}
 
 			if (tokenCount < 0) {
-				console.warn("EdgeAICoder <Language Model API>: Negative token count received:", tokenCount)
+				console.warn("Ecline <Language Model API>: Negative token count received:", tokenCount)
 				return 0
 			}
 
@@ -287,12 +287,12 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 		} catch (error) {
 			// Handle specific error types
 			if (error instanceof vscode.CancellationError) {
-				console.debug("EdgeAICoder <Language Model API>: Token counting cancelled by user")
+				console.debug("Ecline <Language Model API>: Token counting cancelled by user")
 				return 0
 			}
 
 			const errorMessage = error instanceof Error ? error.message : "Unknown error"
-			console.warn("EdgeAICoder <Language Model API>: Token counting failed:", errorMessage)
+			console.warn("Ecline <Language Model API>: Token counting failed:", errorMessage)
 
 			// Log additional error details if available
 			if (error instanceof Error && error.stack) {
@@ -324,7 +324,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 
 	private async getClient(): Promise<vscode.LanguageModelChat> {
 		if (!this.client) {
-			console.debug("EdgeAICoder <Language Model API>: Getting client with options:", {
+			console.debug("Ecline <Language Model API>: Getting client with options:", {
 				vsCodeLmModelSelector: this.options.vsCodeLmModelSelector,
 				hasOptions: !!this.options,
 				selectorKeys: this.options.vsCodeLmModelSelector ? Object.keys(this.options.vsCodeLmModelSelector) : [],
@@ -333,12 +333,12 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			try {
 				// Use default empty selector if none provided to get all available models
 				const selector = this.options?.vsCodeLmModelSelector || {}
-				console.debug("EdgeAICoder <Language Model API>: Creating client with selector:", selector)
+				console.debug("Ecline <Language Model API>: Creating client with selector:", selector)
 				this.client = await this.createClient(selector)
 			} catch (error) {
 				const message = error instanceof Error ? error.message : "Unknown error"
-				console.error("EdgeAICoder <Language Model API>: Client creation failed:", message)
-				throw new Error(`EdgeAICoder <Language Model API>: Failed to create client: ${message}`)
+				console.error("Ecline <Language Model API>: Client creation failed:", message)
+				throw new Error(`Ecline <Language Model API>: Failed to create client: ${message}`)
 			}
 		}
 
@@ -440,7 +440,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 		try {
 			// Create the response stream with minimal required options
 			const requestOptions: vscode.LanguageModelChatRequestOptions = {
-				justification: `EdgeAICoder would like to use '${client.name}' from '${client.vendor}', Click 'Allow' to proceed.`,
+				justification: `Ecline would like to use '${client.name}' from '${client.vendor}', Click 'Allow' to proceed.`,
 			}
 
 			// Note: Tool support is currently provided by the VSCode Language Model API directly
@@ -457,7 +457,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 				if (chunk instanceof vscode.LanguageModelTextPart) {
 					// Validate text part value
 					if (typeof chunk.value !== "string") {
-						console.warn("EdgeAICoder <Language Model API>: Invalid text part value received:", chunk.value)
+						console.warn("Ecline <Language Model API>: Invalid text part value received:", chunk.value)
 						continue
 					}
 
@@ -470,18 +470,18 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 					try {
 						// Validate tool call parameters
 						if (!chunk.name || typeof chunk.name !== "string") {
-							console.warn("EdgeAICoder <Language Model API>: Invalid tool name received:", chunk.name)
+							console.warn("Ecline <Language Model API>: Invalid tool name received:", chunk.name)
 							continue
 						}
 
 						if (!chunk.callId || typeof chunk.callId !== "string") {
-							console.warn("EdgeAICoder <Language Model API>: Invalid tool callId received:", chunk.callId)
+							console.warn("Ecline <Language Model API>: Invalid tool callId received:", chunk.callId)
 							continue
 						}
 
 						// Ensure input is a valid object
 						if (!chunk.input || typeof chunk.input !== "object") {
-							console.warn("EdgeAICoder <Language Model API>: Invalid tool input received:", chunk.input)
+							console.warn("Ecline <Language Model API>: Invalid tool input received:", chunk.input)
 							continue
 						}
 
@@ -497,7 +497,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 						accumulatedText += toolCallText
 
 						// Log tool call for debugging
-						console.debug("EdgeAICoder <Language Model API>: Processing tool call:", {
+						console.debug("Ecline <Language Model API>: Processing tool call:", {
 							name: chunk.name,
 							callId: chunk.callId,
 							inputSize: JSON.stringify(chunk.input).length,
@@ -508,12 +508,12 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 							text: toolCallText,
 						}
 					} catch (error) {
-						console.error("EdgeAICoder <Language Model API>: Failed to process tool call:", error)
+						console.error("Ecline <Language Model API>: Failed to process tool call:", error)
 						// Continue processing other chunks even if one fails
 						continue
 					}
 				} else {
-					console.warn("EdgeAICoder <Language Model API>: Unknown chunk type received:", chunk)
+					console.warn("Ecline <Language Model API>: Unknown chunk type received:", chunk)
 				}
 			}
 
@@ -531,11 +531,11 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			this.ensureCleanState()
 
 			if (error instanceof vscode.CancellationError) {
-				throw new Error("EdgeAICoder <Language Model API>: Request cancelled by user")
+				throw new Error("Ecline <Language Model API>: Request cancelled by user")
 			}
 
 			if (error instanceof Error) {
-				console.error("EdgeAICoder <Language Model API>: Stream error details:", {
+				console.error("Ecline <Language Model API>: Stream error details:", {
 					message: error.message,
 					stack: error.stack,
 					name: error.name,
@@ -546,13 +546,13 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			} else if (typeof error === "object" && error !== null) {
 				// Handle error-like objects
 				const errorDetails = JSON.stringify(error, null, 2)
-				console.error("EdgeAICoder <Language Model API>: Stream error object:", errorDetails)
-				throw new Error(`EdgeAICoder <Language Model API>: Response stream error: ${errorDetails}`)
+				console.error("Ecline <Language Model API>: Stream error object:", errorDetails)
+				throw new Error(`Ecline <Language Model API>: Response stream error: ${errorDetails}`)
 			} else {
 				// Fallback for unknown error types
 				const errorMessage = String(error)
-				console.error("EdgeAICoder <Language Model API>: Unknown stream error:", errorMessage)
-				throw new Error(`EdgeAICoder <Language Model API>: Response stream error: ${errorMessage}`)
+				console.error("Ecline <Language Model API>: Unknown stream error:", errorMessage)
+				throw new Error(`Ecline <Language Model API>: Response stream error: ${errorMessage}`)
 			}
 		}
 	}
@@ -572,7 +572,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			// Log any missing properties for debugging
 			for (const [prop, value] of Object.entries(requiredProps)) {
 				if (!value && value !== 0) {
-					console.warn(`EdgeAICoder <Language Model API>: Client missing ${prop} property`)
+					console.warn(`Ecline <Language Model API>: Client missing ${prop} property`)
 				}
 			}
 
@@ -603,7 +603,7 @@ export class VsCodeLmHandler implements ApiHandler, SingleCompletionHandler {
 			? stringifyVsCodeLmModelSelector(this.options.vsCodeLmModelSelector)
 			: "vscode-lm"
 
-		console.debug("EdgeAICoder <Language Model API>: No client available, using fallback model info")
+		console.debug("Ecline <Language Model API>: No client available, using fallback model info")
 
 		return {
 			id: fallbackId,

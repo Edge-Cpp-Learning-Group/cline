@@ -43,7 +43,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					.
 				</li>
 				<li>
-					<b>Mermaid diagrams in Plan mode!</b> EdgeAICoder can now visualize his plans using flowcharts, sequences,
+					<b>Mermaid diagrams in Plan mode!</b> Ecline can now visualize his plans using flowcharts, sequences,
 					entity-relationships, and more. When he explains his approach using mermaid, you'll see a diagram right in
 					chat that you can click to expand.
 				</li>
@@ -93,7 +93,7 @@ const Announcement = ({ version, hideAnnouncement }: AnnouncementProps) => {
 					)}
 				</li>
 				<li>
-					<b>Edit EdgeAI's changes before accepting!</b> When he creates or edits a file, you can modify his
+					<b>Edit Ecline's changes before accepting!</b> When he creates or edits a file, you can modify his
 					changes directly in the right side of the diff view (+ hover over the 'Revert Block' arrow button in
 					the center to undo "<code>{"// rest of code here"}</code>" shenanigans)
 				</li>

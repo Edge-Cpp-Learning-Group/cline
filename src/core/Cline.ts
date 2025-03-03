@@ -552,7 +552,7 @@ export class Cline {
 	}> {
 		// If this Cline instance was aborted by the provider, then the only thing keeping us alive is a promise still running in the background, in which case we don't want to send its result to the webview as it is attached to a new instance of Cline now. So we can safely ignore the result of any active promises, and this class will be deallocated. (Although we set Cline = undefined in provider, that simply removes the reference to this instance, but the instance is still alive until this promise resolves or rejects.)
 		if (this.abort) {
-			throw new Error("EdgeAICoder instance aborted")
+			throw new Error("Ecline instance aborted")
 		}
 		let askTs: number
 		if (partial !== undefined) {
@@ -670,7 +670,7 @@ export class Cline {
 
 	async say(type: ClineSay, text?: string, images?: string[], partial?: boolean): Promise<undefined> {
 		if (this.abort) {
-			throw new Error("EdgeAICoder instance aborted")
+			throw new Error("Ecline instance aborted")
 		}
 
 		if (partial !== undefined) {
@@ -750,7 +750,7 @@ export class Cline {
 	async sayAndCreateMissingParamError(toolName: ToolUseName, paramName: string, relPath?: string) {
 		await this.say(
 			"error",
-			`EdgeAICoder tried to use ${toolName}${
+			`Ecline tried to use ${toolName}${
 				relPath ? ` for '${relPath.toPosix()}'` : ""
 			} without value for required parameter '${paramName}'. Retrying...`,
 		)
@@ -1058,7 +1058,7 @@ export class Cline {
 			} else {
 				// this.say(
 				// 	"tool",
-				// 	"EdgeAICoder responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
+				// 	"Ecline responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
 				// )
 				nextUserContent = [
 					{
@@ -1269,7 +1269,7 @@ export class Cline {
 			throw new Error("MCP hub not available")
 		}
 
-		const disableBrowserTool = vscode.workspace.getConfiguration("edgeaicoder").get<boolean>("disableBrowserTool") ?? false
+		const disableBrowserTool = vscode.workspace.getConfiguration("ecline").get<boolean>("disableBrowserTool") ?? false
 		const modelSupportsComputerUse = this.api.getModel().info.supportsComputerUse ?? false
 
 		const supportsComputerUse = modelSupportsComputerUse && !disableBrowserTool // only enable computer use if the model supports it and the user hasn't disabled it
@@ -1283,24 +1283,24 @@ export class Cline {
 			try {
 				const ruleFileContent = (await fs.readFile(clineRulesFilePath, "utf8")).trim()
 				if (ruleFileContent) {
-					clineRulesFileInstructions = `# .edgeairules\n\nThe following is provided by a root-level .edgeairules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${ruleFileContent}`
+					clineRulesFileInstructions = `# .eclinerules\n\nThe following is provided by a root-level .eclinerules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${ruleFileContent}`
 				}
 			} catch {
-				console.error(`Failed to read .edgeairules file at ${clineRulesFilePath}`)
+				console.error(`Failed to read .eclinerules file at ${clineRulesFilePath}`)
 			}
 		}
 
 		if (!clineRulesFileInstructions) {
 			const repoInfo = await getRepoInfo(cwd)
 			if (repoInfo && repoInfo.organization === "microsoft" && repoInfo.repository === "chromium.src") {
-				clineRulesFileInstructions = `# .edgeairules\n\nThe following is provided by a root-level .edgeairules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${defaultEdgeRules}`
+				clineRulesFileInstructions = `# .eclinerules\n\nThe following is provided by a root-level .eclinerules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${defaultEdgeRules}`
 			}
 		}
 
 		const clineIgnoreContent = this.clineIgnoreController.clineIgnoreContent
 		let clineIgnoreInstructions: string | undefined
 		if (clineIgnoreContent) {
-			clineIgnoreInstructions = `# .edgeaiignore\n\n(The following is provided by a root-level .edgeaiignore file where the user has specified files and directories that should not be accessed. When using list_files, you'll notice a ${LOCK_TEXT_SYMBOL} next to files that are blocked. Attempting to access the file's contents e.g. through read_file will result in an error.)\n\n${clineIgnoreContent}\n.edgeaiignore`
+			clineIgnoreInstructions = `# .eclineignore\n\n(The following is provided by a root-level .eclineignore file where the user has specified files and directories that should not be accessed. When using list_files, you'll notice a ${LOCK_TEXT_SYMBOL} next to files that are blocked. Attempting to access the file's contents e.g. through read_file will result in an error.)\n\n${clineIgnoreContent}\n.eclineignore`
 		}
 
 		if (settingsCustomInstructions || clineRulesFileInstructions) {
@@ -1400,7 +1400,7 @@ export class Cline {
 
 	async presentAssistantMessage() {
 		if (this.abort) {
-			throw new Error("EdgeAICoder instance aborted")
+			throw new Error("Ecline instance aborted")
 		}
 
 		if (this.presentAssistantMessageLocked) {
@@ -1825,7 +1825,7 @@ export class Cline {
 								} else {
 									// If auto-approval is enabled but this tool wasn't auto-approved, send notification
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to ${fileExists ? "edit" : "create"} ${path.basename(relPath)}`,
+										`Ecline wants to ${fileExists ? "edit" : "create"} ${path.basename(relPath)}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									// const didApprove = await askApproval("tool", completeMessage)
@@ -1966,7 +1966,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to read ${path.basename(absolutePath)}`,
+										`Ecline wants to read ${path.basename(absolutePath)}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2037,7 +2037,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to view directory ${path.basename(absolutePath)}/`,
+										`Ecline wants to view directory ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2101,7 +2101,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to view source code definitions in ${path.basename(absolutePath)}/`,
+										`Ecline wants to view source code definitions in ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2188,7 +2188,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to search files in ${path.basename(absolutePath)}/`,
+										`Ecline wants to search files in ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2272,7 +2272,7 @@ export class Cline {
 										this.consecutiveAutoApprovedRequestsCount++
 									} else {
 										showNotificationForApprovalIfAutoApprovalEnabled(
-											`EdgeAICoder wants to use a browser and launch ${url}`,
+											`Ecline wants to use a browser and launch ${url}`,
 										)
 										this.removeLastPartialMessageIfExistsWithType("say", "browser_action_launch")
 										const didApprove = await askApproval("browser_action_launch", url)
@@ -2434,7 +2434,7 @@ export class Cline {
 									didAutoApprove = true
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to execute a command: ${command}`,
+										`Ecline wants to execute a command: ${command}`,
 									)
 									// this.removeLastPartialMessageIfExistsWithType("say", "command")
 									const didApprove = await askApproval(
@@ -2531,7 +2531,7 @@ export class Cline {
 										this.consecutiveMistakeCount++
 										await this.say(
 											"error",
-											`EdgeAICoder tried to use ${tool_name} with an invalid JSON argument. Retrying...`,
+											`Ecline tried to use ${tool_name} with an invalid JSON argument. Retrying...`,
 										)
 										pushToolResult(
 											formatResponse.toolError(
@@ -2561,7 +2561,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to use ${tool_name} on ${server_name}`,
+										`Ecline wants to use ${tool_name} on ${server_name}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "use_mcp_server")
 									const didApprove = await askApproval("use_mcp_server", completeMessage)
@@ -2651,7 +2651,7 @@ export class Cline {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`EdgeAICoder wants to access ${uri} on ${server_name}`,
+										`Ecline wants to access ${uri} on ${server_name}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "use_mcp_server")
 									const didApprove = await askApproval("use_mcp_server", completeMessage)
@@ -2701,7 +2701,7 @@ export class Cline {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "EdgeAICoder has a question...",
+										subtitle: "Ecline has a question...",
 										message: question.replace(/\n/g, " "),
 									})
 								}
@@ -2737,7 +2737,7 @@ export class Cline {
 
 								// if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 								// 	showSystemNotification({
-								// 		subtitle: "EdgeAICoder has a response...",
+								// 		subtitle: "Ecline has a response...",
 								// 		message: response.replace(/\n/g, " "),
 								// 	})
 								// }
@@ -2978,21 +2978,21 @@ export class Cline {
 		isNewTask: boolean = false,
 	): Promise<boolean> {
 		if (this.abort) {
-			throw new Error("EdgeAICoder instance aborted")
+			throw new Error("Ecline instance aborted")
 		}
 
 		if (this.consecutiveMistakeCount >= 3) {
 			if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Error",
-					message: "EdgeAICoder is having trouble. Would you like to continue the task?",
+					message: "Ecline is having trouble. Would you like to continue the task?",
 				})
 			}
 			const { response, text, images } = await this.ask(
 				"mistake_limit_reached",
 				this.api.getModel().id.includes("claude")
 					? `This may indicate a failure in his thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. "Try breaking down the task into smaller steps").`
-					: "EdgeAICoder uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 3.5 Sonnet for its advanced agentic coding capabilities.",
+					: "Ecline uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 3.5 Sonnet for its advanced agentic coding capabilities.",
 			)
 			if (response === "messageResponse") {
 				userContent.push(
@@ -3015,12 +3015,12 @@ export class Cline {
 			if (this.autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Max Requests Reached",
-					message: `EdgeAICoder has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests.`,
+					message: `Ecline has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests.`,
 				})
 			}
 			await this.ask(
 				"auto_approval_max_req_reached",
-				`EdgeAICoder has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
+				`Ecline has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
 			)
 			// if we get past the promise it means the user approved and did not start a new task
 			this.consecutiveAutoApprovedRequestsCount = 0
@@ -3246,7 +3246,7 @@ export class Cline {
 
 			// need to call here in case the stream was aborted
 			if (this.abort) {
-				throw new Error("EdgeAICoder instance aborted")
+				throw new Error("Ecline instance aborted")
 			}
 
 			this.didCompleteReadingStream = true

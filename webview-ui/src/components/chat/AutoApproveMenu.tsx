@@ -217,8 +217,8 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 							color: getAsVar(VSC_DESCRIPTION_FOREGROUND),
 							fontSize: "12px",
 						}}>
-						Auto-approve allows EdgeAICoder to perform the following actions without asking for permission. Please use
-						with caution and only enable if you understand the risks.
+						Auto-approve allows Ecline to perform the following actions without asking for permission. Please use with
+						caution and only enable if you understand the risks.
 					</div>
 					{ACTION_METADATA.map((action) => (
 						<div key={action.id} style={{ margin: "6px 0" }}>
@@ -285,8 +285,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 							fontSize: "12px",
 							marginBottom: "10px",
 						}}>
-						EdgeAICoder will automatically make this many API requests before asking for approval to proceed with the
-						task.
+						Ecline will automatically make this many API requests before asking for approval to proceed with the task.
 					</div>
 					<div style={{ margin: "6px 0" }}>
 						<VSCodeCheckbox
@@ -303,8 +302,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 								color: getAsVar(VSC_DESCRIPTION_FOREGROUND),
 								fontSize: "12px",
 							}}>
-							Receive system notifications when EdgeAICoder requires approval to proceed or when a task is
-							completed.
+							Receive system notifications when Ecline requires approval to proceed or when a task is completed.
 						</div>
 					</div>
 				</div>
